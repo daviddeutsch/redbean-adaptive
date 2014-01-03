@@ -67,4 +67,18 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 
 		return array( $toolbox->getRedBean(), $toolbox->getDatabaseAdapter(), $toolbox->getWriter(), $toolbox );
 	}
+
+	/**
+	 * Sets the model formatter to be used to discover a model
+	 * for Fuse.
+	 *
+	 * @param string $modelFormatter
+	 *
+	 * @return void
+	 */
+	public function setModelFormatter( $modelFormatter )
+	{
+		$this->helper->setModelFormatter( $modelFormatter );
+	}
+
 }
