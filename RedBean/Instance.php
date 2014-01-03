@@ -1229,6 +1229,8 @@ class RedBean_Instance
 		$this->tagManager         = new RedBean_TagManager( $this->toolbox );
 		$this->f                  = new RedBean_SQLHelper( $this->adapter );
 
+		$this->x                  = new RedBean_FindHelper( $this );
+
 		return $oldTools;
 	}
 
@@ -1737,6 +1739,43 @@ class RedBean_Instance
 			throw new RedBean_Exception( 'Plugin \''.$pluginName.'\' does not exist, add this plugin using: $db->ext(\''.$pluginName.'\')' );
 		}
 		return call_user_func_array( $this->plugins[$pluginName], $params );
+	}
+
+	/**
+	 * Multi-Purpose Shortcut for handling Beans
+	 *
+	 * @param mixed $left
+	 * @param mixed $right
+	 *
+	 * @return array|int|\RedBean_OODBBean
+	 */
+	public function _( $one, $two=null, $three=null )
+	{
+		if ( is_object($one) ) {
+			return $this->store($one);
+		}
+
+		if ( empty($two) ) {
+			return $this->dispense($one);
+		}
+
+		if ( is_numeric($two) ) {
+			return $this->load($one, $two);
+		}
+
+		$bean = $this->dispense($one);
+
+		foreach ( $two as $k => $v ) {
+			$bean->$k = $v;
+		}
+
+		if ( $three === true ) {
+			$bean->id = $this->store($bean);
+		}
+
+		$bean->setMeta('fresh', true);
+
+		return $bean;
 	}
 }
 
