@@ -5,10 +5,10 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 	/**
 	 * @var RedBean_Instance
 	 */
-	private $instance;
+	protected $r;
 
 	public function bindInstance( $instance )
 	{
-		$this->instance = $instance;
+		$this->r = $instance;
 	}
 }
