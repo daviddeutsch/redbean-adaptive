@@ -20,10 +20,10 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 
 		$this->instance->pipeline->push(
 			array(
-				'action' => 'update',
-				'type' => $this->bean->getMeta('type'),
+				'action'  => 'update',
+				'type'    => $this->bean->getMeta('type'),
 				'item_id' => $this->bean->id,
-				'delta' => json_encode($delta)
+				'delta'   => json_encode($delta)
 			)
 		);
 	}
@@ -32,8 +32,8 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 	{
 		$this->instance->pipeline->push(
 			array(
-				'action' => 'delete',
-				'type' => $this->bean->getMeta('type'),
+				'action'  => 'delete',
+				'type'    => $this->bean->getMeta('type'),
 				'item_id' => $this->bean->id
 			)
 		);

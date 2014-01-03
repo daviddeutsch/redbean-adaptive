@@ -589,12 +589,13 @@ class RedBean_OODB extends RedBean_Observable
 	 *
 	 * @param RedBean_QueryWriter $writer writer
 	 */
-	public function __construct( RedBean_QueryWriter $writer )
+	public function __construct( RedBean_QueryWriter $writer, $instance )
 	{
 		if ( $writer instanceof RedBean_QueryWriter ) {
 			$this->writer = $writer;
 		}
-		$this->beanhelper = new RedBean_BeanHelper_Facade();
+
+		$this->beanhelper = new RedBean_BeanHelper_Facade( $instance );
 	}
 
 	/**
@@ -790,10 +791,10 @@ class RedBean_OODB extends RedBean_Observable
 	 * RedBean runs in frozen mode it will throw an exception.
 	 * This function returns the primary key ID of the inserted
 	 * bean.
-	 * 
+	 *
 	 * The return value is an integer if possible. If it is not possible to
 	 * represent the value as an integer a string will be returned. We use
-	 * explicit casts instead of functions to preserve performance 
+	 * explicit casts instead of functions to preserve performance
 	 * (0.13 vs 0.28 for 10000 iterations on Core i3).
 	 *
 	 * @param RedBean_OODBBean|RedBean_SimpleModel $bean bean to store

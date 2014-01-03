@@ -19,12 +19,12 @@ class RedBean_ModelHelper implements RedBean_Observer
 	/**
 	 * @var RedBean_IModelFormatter
 	 */
-	private static $modelFormatter;
+	private $modelFormatter;
 
 	/**
 	 * @var RedBean_DependencyInjector
 	 */
-	private static $dependencyInjector;
+	private $dependencyInjector;
 
 	/**
 	 * @see RedBean_Observer::onEvent
@@ -53,10 +53,10 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 *
 	 * @return string
 	 */
-	public static function getModelName( $model, $bean = NULL )
+	public function getModelName( $model, $bean = NULL )
 	{
-		if ( self::$modelFormatter ) {
-			return self::$modelFormatter->formatModel( $model, $bean );
+		if ( $this->modelFormatter ) {
+			return $this->modelFormatter->formatModel( $model, $bean );
 		} else {
 			$prefix = defined('REDBEAN_MODEL_PREFIX') ? REDBEAN_MODEL_PREFIX : 'Model_';
 
@@ -72,9 +72,9 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 *
 	 * @return void
 	 */
-	public static function setModelFormatter( $modelFormatter )
+	public function setModelFormatter( $modelFormatter )
 	{
-		self::$modelFormatter = $modelFormatter;
+		$this->modelFormatter = $modelFormatter;
 	}
 
 	/**
@@ -85,13 +85,19 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 *
 	 * @return object
 	 */
-	public static function factory( $modelClassName )
+	public function factory( $modelClassName )
 	{
-		if ( self::$dependencyInjector ) {
-			return self::$dependencyInjector->getInstance( $modelClassName );
+		if ( $this->dependencyInjector ) {
+			return $this->dependencyInjector->getInstance( $modelClassName );
 		}
 
-		return new $modelClassName();
+		$model = new $modelClassName();
+
+		if ( method_exists($model, 'bindInstance') ) {
+			$model->bindInstance( $this->instance );
+		}
+
+		return $model;
 	}
 
 	/**
@@ -101,9 +107,9 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 *
 	 * @return void
 	 */
-	public static function setDependencyInjector( RedBean_DependencyInjector $di )
+	public function setDependencyInjector( RedBean_DependencyInjector $di )
 	{
-		self::$dependencyInjector = $di;
+		$this->dependencyInjector = $di;
 	}
 
 	/**
@@ -112,9 +118,9 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 *
 	 * @return void
 	 */
-	public static function clearDependencyInjector()
+	public function clearDependencyInjector()
 	{
-		self::$dependencyInjector = NULL;
+		$this->dependencyInjector = NULL;
 	}
 
 	/**
