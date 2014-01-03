@@ -1,6 +1,6 @@
 <?php
 
-class RedBean_PipelineModel extends RedBean_SimpleModel
+class RedBean_InstanceModel extends RedBean_SimpleModel
 {
 	/**
 	 * @var RedBean_Instance
