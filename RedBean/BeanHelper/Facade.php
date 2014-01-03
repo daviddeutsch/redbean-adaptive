@@ -16,13 +16,29 @@
  */
 class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 {
+	/**
+	 * @var RedBean_Instance
+	 */
+	private $instance;
 
 	/**
-	 * @see RedBean_BeanHelper::getToolbox
+	 * @var RedBean_ModelHelper
 	 */
-	public function getToolbox()
+	private $helper;
+
+	public function __construct( $instance )
 	{
-		return RedBean_Facade::$toolbox;
+		$this->instance = $instance;
+
+		$this->helper = new RedBean_ModelHelper($this->instance);
+	}
+
+	/**
+	 * @see RedBean_BeanHelper::getInstance
+	 */
+	public function getInstance()
+	{
+		return $this->instance;
 	}
 
 	/**
@@ -30,13 +46,13 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 	 */
 	public function getModelForBean( RedBean_OODBBean $bean )
 	{
-		$modelName = RedBean_ModelHelper::getModelName( $bean->getMeta( 'type' ), $bean );
+		$modelName = $this->helper->getModelName( $bean->getMeta( 'type' ), $bean );
 
 		if ( !class_exists( $modelName ) ) {
 			return NULL;
 		}
 
-		$obj = RedBean_ModelHelper::factory( $modelName );
+		$obj = $this->helper->factory( $modelName );
 		$obj->loadBean( $bean );
 
 		return $obj;
@@ -47,7 +63,7 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 	 */
 	public function getExtractedToolbox()
 	{
-		$toolbox = $this->getToolbox();
+		$toolbox = $this->instance->getToolbox();
 
 		return array( $toolbox->getRedBean(), $toolbox->getDatabaseAdapter(), $toolbox->getWriter(), $toolbox );
 	}

@@ -35,6 +35,16 @@ class RedBean_ModelHelper implements RedBean_Observer
 	}
 
 	/**
+	 * @var RedBean_Instance
+	 */
+	private $instance;
+
+	public function __construct( $instance )
+	{
+		$this->instance = $instance;
+	}
+
+	/**
 	 * Given a model ID (model identifier) this method returns the
 	 * full model name.
 	 *

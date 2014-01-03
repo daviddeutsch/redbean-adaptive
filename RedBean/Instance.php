@@ -96,6 +96,21 @@ class RedBean_Instance
 	public $f;
 
 	/**
+	 * @var RedBean_FindHelper
+	 */
+	public $x;
+
+	/**
+	 * @var RedBean_BeanHelper_Facade
+	 */
+	public $helper;
+
+	/**
+	 * @var RedBean_Pipeline
+	 */
+	public $pipeline;
+
+	/**
 	 * @var array
 	 */
 	public $plugins = array();
@@ -1219,17 +1234,19 @@ class RedBean_Instance
 		$this->labelMaker         = new RedBean_LabelMaker( $this->toolbox );
 		$this->extAssocManager    = new RedBean_AssociationManager_ExtAssociationManager( $this->toolbox );
 
-		$helper                   = new RedBean_ModelHelper();
+		$this->helper             = new RedBean_ModelHelper( $this );
 
-		$helper->attachEventListeners( $this->redbean );
+		$this->helper->attachEventListeners( $this->redbean );
 
-		$this->associationManager->addEventListener( 'delete', $helper );
+		$this->associationManager->addEventListener( 'delete', $this->helper );
 
 		$this->duplicationManager = new RedBean_DuplicationManager( $this->toolbox );
 		$this->tagManager         = new RedBean_TagManager( $this->toolbox );
 		$this->f                  = new RedBean_SQLHelper( $this->adapter );
 
 		$this->x                  = new RedBean_FindHelper( $this );
+
+		$this->pipeline           = new RedBean_Pipeline( $this );
 
 		return $oldTools;
 	}

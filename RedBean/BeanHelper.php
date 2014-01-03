@@ -18,6 +18,8 @@ interface RedBean_BeanHelper
 {
 
 	/**
+	 * Modified to support instances
+	 *
 	 * Returns a toolbox to empower the bean.
 	 * This allows beans to perform OODB operations by themselves,
 	 * as such the bean is a proxy for OODB. This allows beans to implement
@@ -25,7 +27,7 @@ interface RedBean_BeanHelper
 	 *
 	 * @return RedBean_Toolbox $toolbox toolbox
 	 */
-	public function getToolbox();
+	public function getInstance();
 
 	/**
 	 * Does approximately the same as getToolbox but also extracts the

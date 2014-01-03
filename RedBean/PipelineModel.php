@@ -7,9 +7,9 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 	 */
 	private $instance;
 
-	public function open()
+	public function bindInstance( $instance )
 	{
-
+		$this->instance = $instance;
 	}
 
 	public function after_update( $bean )
@@ -18,7 +18,7 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 
 		if ( is_null($delta) ) return;
 
-		R::pipeline()->push(
+		$this->instance->pipeline->push(
 			array(
 				'action' => 'update',
 				'type' => $this->bean->getMeta('type'),
@@ -30,7 +30,7 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 
 	public function after_delete()
 	{
-		R::pipeline()->push(
+		$this->instance->pipeline->push(
 			array(
 				'action' => 'delete',
 				'type' => $this->bean->getMeta('type'),
