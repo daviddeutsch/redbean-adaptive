@@ -330,7 +330,7 @@ class RedBean_Instance
 	 */
 	public function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $autoSetEncoding = TRUE )
 	{
-		$this->toolboxes[$key] = RedBean_Setup::kickstart( $dsn, $user, $pass, $frozen, $autoSetEncoding );
+		$this->toolboxes[$key] = RedBean_Setup::kickstart( $this, $dsn, $user, $pass, $frozen, $autoSetEncoding );
 	}
 
 	/**
