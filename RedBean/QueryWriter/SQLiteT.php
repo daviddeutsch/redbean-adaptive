@@ -299,7 +299,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	public function code( $typedescription, $includeSpecials = FALSE )
 	{
 		$r = ( ( isset( $this->sqltype_typeno[$typedescription] ) ) ? $this->sqltype_typeno[$typedescription] : 99 );
-		
+
 		return $r;
 	}
 
@@ -320,8 +320,13 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function getTables()
 	{
-		return $this->adapter->getCol( "SELECT name FROM sqlite_master
+		if ( $this->prefix ) {
+			return $this->adapter->getCol( "SELECT name FROM sqlite_master
+			WHERE type='table' AND name!='sqlite_sequence' AND name LIKE '" . $this->prefix . "%';" );
+		} else {
+			return $this->adapter->getCol( "SELECT name FROM sqlite_master
 			WHERE type='table' AND name!='sqlite_sequence';" );
+		}
 	}
 
 	/**
@@ -407,7 +412,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	public function wipe( $type )
 	{
 		$table = $this->esc( $type );
-		
+
 		$this->adapter->exec( "DELETE FROM $table " );
 	}
 

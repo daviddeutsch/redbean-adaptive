@@ -172,7 +172,13 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function getTables()
 	{
-		$rows = $this->adapter->getCol( "SELECT class_name FROM db_class WHERE is_system_class = 'NO';" );
+
+
+		if ( $this->prefix ) {
+			$rows = $this->adapter->getCol( "SELECT class_name FROM db_class WHERE is_system_class = 'NO' AND class_name LIKE '" . $this->prefix . "%';" );
+		} else {
+			$rows = $this->adapter->getCol( "SELECT class_name FROM db_class WHERE is_system_class = 'NO';" );
+		}
 
 		return $rows;
 	}

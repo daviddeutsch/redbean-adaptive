@@ -150,7 +150,11 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	 */
 	public function getTables()
 	{
-		return $this->adapter->getCol( "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'" );
+		if ( $this->prefix ) {
+			return $this->adapter->getCol( "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name LIKE '" . $this->prefix . "%'" );
+		} else {
+			return $this->adapter->getCol( "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'" );
+		}
 	}
 
 	/**

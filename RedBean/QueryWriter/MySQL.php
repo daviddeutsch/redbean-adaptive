@@ -147,7 +147,11 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 	 */
 	public function getTables()
 	{
-		return $this->adapter->getCol( 'show tables' );
+		if ( $this->prefix ) {
+			return $this->adapter->getCol( 'show tables like \'' . $this->prefix . '%\'' );
+		} else {
+			return $this->adapter->getCol( 'show tables' );
+		}
 	}
 
 	/**

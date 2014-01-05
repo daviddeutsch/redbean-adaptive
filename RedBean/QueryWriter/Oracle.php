@@ -278,7 +278,11 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function getTables()
 	{
-		return $this->adapter->getCol( 'SELECT LOWER(table_name) FROM user_tables' );
+		if ( $this->prefix ) {
+			return $this->adapter->getCol( 'SELECT LOWER(table_name) FROM user_tables WHERE table_name LIKE \'' . $this->prefix . '%\'' );
+		} else {
+			return $this->adapter->getCol( 'SELECT LOWER(table_name) FROM user_tables' );
+		}
 	}
 
 	/**
@@ -709,7 +713,7 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 
     /**
      * Oracle TRUNCATE needs TABLE|CLUSTER clause
-     * 
+     *
      * @link http://docs.oracle.com/cd/B19306_01/server.102/b14200/statements_10006.htm
      * @see RedBean_QueryWriter::wipe
      */
