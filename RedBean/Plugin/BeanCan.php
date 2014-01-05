@@ -39,11 +39,18 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	private $whitelist;
 
 	/**
+	 * @var RedBean_Instance
+	 */
+	private $instance;
+
+	/**
 	 * Constructor.
 	 */
 	public function __construct( $instance )
 	{
-		$this->modelHelper = new RedBean_ModelHelper($instance);
+		$this->instance = $instance;
+
+		$this->modelHelper = new RedBean_ModelHelper($this->instance);
 	}
 
 	/**
@@ -92,14 +99,14 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 		$data = $data[0];
 
 		if ( !isset( $data['id'] ) ) {
-			$bean = RedBean_Facade::dispense( $beanType );
+			$bean = $this->instance->dispense( $beanType );
 		} else {
-			$bean = RedBean_Facade::load( $beanType, $data['id'] );
+			$bean = $this->instance->load( $beanType, $data['id'] );
 		}
 
 		$bean->import( $data );
 
-		$rid = RedBean_Facade::store( $bean );
+		$rid = $this->instance->store( $bean );
 
 		return $this->resp( $rid, $id );
 	}
@@ -119,7 +126,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 			return $this->resp( NULL, $id, self::C_JSONRPC2_INVALID_PARAMETERS, 'First param needs to be Bean ID' );
 		}
 
-		$bean = RedBean_Facade::load( $beanType, $data[0] );
+		$bean = $this->instance->load( $beanType, $data[0] );
 
 		return $this->resp( $bean->export(), $id );
 	}
@@ -139,9 +146,9 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 			return $this->resp( NULL, $id, self::C_JSONRPC2_INVALID_PARAMETERS, 'First param needs to be Bean ID' );
 		}
 
-		$bean = RedBean_Facade::load( $beanType, $data[0] );
+		$bean = $this->instance->load( $beanType, $data[0] );
 
-		RedBean_Facade::trash( $bean );
+		$this->instance->trash( $bean );
 
 		return $this->resp( 'OK', $id );
 	}
@@ -161,9 +168,9 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 			return $this->resp( NULL, $id, self::C_JSONRPC2_INVALID_PARAMETERS, 'First param needs to be Bean ID' );
 		}
 
-		$bean  = RedBean_Facade::load( $beanType, $data[0] );
+		$bean  = $this->instance->load( $beanType, $data[0] );
 
-		$array = RedBean_Facade::exportAll( array( $bean ), TRUE );
+		$array = $this->instance->exportAll( array( $bean ), TRUE );
 
 		return $this->resp( $array, $id );
 	}
@@ -327,34 +334,145 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	}
 
 	/**
-	 * Support for RESTFul GET-requests.
-	 * Only supports very BASIC REST requests, for more functionality please use
-	 * the JSON-RPC 2 interface.
+	 * Execute a REST Request
 	 *
-	 * @param string $pathToResource RESTFul path to resource
+	 * @param string $method REST Method to carry out
+	 * @param string $path   RESTFul path to resource (or resource type)
+	 * @param object $path   Data to write to resource (or to create as new resource)
 	 *
 	 * @return string $json a JSON encoded response ready for sending to client
 	 */
-	public function handleRESTGetRequest( $pathToResource )
+	public function handleRESTRequest( $method, $path, $data=array() )
 	{
-		if ( !is_string( $pathToResource ) ) {
-			return $this->resp( NULL, 0, self::C_JSONRPC2_SPECIFIED_ERROR, 'IR' );
+		switch( strtolower($method) ) {
+			case 'get':    return $this->handleRESTGetRequest($path); break;
+			case 'post':   return $this->handleRESTPostRequest($path, $data); break;
+			case 'put':    return $this->handleRESTPutRequest($path, $data); break;
+			case 'delete': return $this->handleRESTDeleteRequest($path); break;
 		}
 
-		$resourceInfo = explode( '/', $pathToResource );
+		return null;
+	}
+
+	/**
+	 * Execute a REST GET Request
+	 *
+	 * @param string $path RESTFul path to resource
+	 *
+	 * @return string $json a JSON encoded response ready for sending to client
+	 */
+	public function handleRESTGetRequest( $path )
+	{
+		if ( !is_string( $path ) ) {
+			return null;
+		}
+
+		$resourceInfo = explode( '/', $path );
 
 		$type = $resourceInfo[0];
 
 		try {
 			if ( count( $resourceInfo ) < 2 ) {
-				return $this->resp( RedBean_Facade::findAndExport( $type ) );
+				return $this->instance->findAndExport( $type );
 			} else {
 				$id = (int) $resourceInfo[1];
 
-				return $this->resp( RedBean_Facade::load( $type, $id )->export(), $id );
+				return $this->instance->load( $type, $id )->export();
 			}
 		} catch ( Exception $exception ) {
-			return $this->resp( NULL, 0, self::C_JSONRPC2_SPECIFIED_ERROR );
+			return null;
+		}
+	}
+
+	/**
+	 * Execute a REST POST Request
+	 *
+	 * Also an alias for PUT Request if no id is specified in path
+	 *
+	 * @param string $path RESTFul path to resource
+	 * @param object $data Data to write to the object
+	 *
+	 * @return string $json a JSON encoded response ready for sending to client
+	 */
+	public function handleRESTPostRequest( $path, $data )
+	{
+		if ( !is_string( $path ) ) {
+			return null;
+		}
+
+		$path = explode( '/', $path );
+
+		try {
+			if ( count( $path ) < 2 ) {
+				return $this->handleRESTPutRequest( explode('/', $path), $data );
+			} else {
+				$bean = $this->instance->load( $path[0], $path[1] );
+
+				foreach ( (array) $data as $k => $v ) {
+					$bean->$k = $v;
+				}
+
+				return $this->instance->store( $bean );
+			}
+		} catch ( Exception $exception ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Execute a REST PUT Request
+	 *
+	 * @param string $path RESTFul path to resource
+	 * @param object $data Data to write to the object
+	 *
+	 * @return string $json a JSON encoded response ready for sending to client
+	 */
+	public function handleRESTPutRequest( $path, $data )
+	{
+		if ( !is_string( $path ) ) {
+			return null;
+		}
+
+		$path = explode( '/', $path );
+
+		try {
+			$bean = $this->instance->dispense( $path[0] );
+
+			foreach ( (array) $data as $k => $v ) {
+				$bean->$k = $v;
+			}
+
+			return $this->instance->store( $bean );
+		} catch ( Exception $exception ) {
+			return null;
+		}
+	}
+
+	/**
+	 * Execute a REST DELETE Request
+	 *
+	 * @param string $path RESTFul path to resource
+	 *
+	 * @return string $json a JSON encoded response ready for sending to client
+	 */
+	public function handleRESTDeleteRequest( $path )
+	{
+		if ( !is_string( $path ) ) {
+			return null;
+		}
+
+		$path = explode( '/', $path );
+
+		if ( count( $path ) < 2 ) return null;
+
+		try {
+			$bean = $this->instance->load( $path[0], $path[1] );
+
+			$this->instance->trash( $bean );
+
+			return null;
+		} catch ( Exception $exception ) {
+			return null;
 		}
 	}
 }
