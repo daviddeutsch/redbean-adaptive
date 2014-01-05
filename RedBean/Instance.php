@@ -1787,7 +1787,9 @@ class RedBean_Instance
 		}
 
 		if ( $three === true ) {
-			$bean->id = $this->store($bean);
+			$id = $this->store($bean);
+
+			$bean = $this->load($one, $id);
 		}
 
 		$bean->setMeta('fresh', true);
@@ -1803,31 +1805,6 @@ class RedBean_Instance
 	public function prefix( $prefix )
 	{
 		$this->writer->setPrefix( $prefix );
-
-		// For switching instead of creating prefixes
-		if ( array_search($class, self::$alias) !== false ) {
-			if ( is_null($facade) ) {
-				R::$writer->setPrefix($prefix);
-			} else {
-				$writer = new $class($facade::$adapter, $prefix);
-
-				$facade::$writer->setPrefix($prefix);
-			}
-
-			return;
-		}
-
-		$class = self::$alias[$class];
-
-		if ( is_null($facade) ) {
-			$writer = new $class(R::$adapter, $prefix);
-
-			R::setWriter($writer);
-		} else {
-			$writer = new $class($facade::$adapter, $prefix);
-
-			$facade::setWriter($writer);
-		}
 	}
 }
 
