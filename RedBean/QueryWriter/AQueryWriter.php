@@ -48,6 +48,11 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	protected static $renames = array();
 
 	/**
+	 * @var string
+	 */
+	protected $prefix;
+
+	/**
 	 * @var array
 	 */
 	public $typeno_sqltype = array();
@@ -444,7 +449,12 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$this->check( $dbStructure );
 
-		return ( $dontQuote ) ? $dbStructure : $this->quoteCharacter . $dbStructure . $this->quoteCharacter;
+		$table = $dbStructure;
+		if ( !empty( $this->prefix ) ) {
+			$table = $this->prefix . $table;
+		}
+
+		return ( $dontQuote ) ? $table : $this->quoteCharacter . $table . $this->quoteCharacter;
 	}
 
 	/**
@@ -914,5 +924,21 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	public function addConstraint( RedBean_OODBBean $bean1, RedBean_OODBBean $bean2 )
 	{
 		$this->addConstraintForTypes( $bean1->getMeta( 'type' ), $bean2->getMeta( 'type' ) );
+	}
+
+	/**
+	 * @see RedBean_QueryWriter::setPrefix
+	 */
+	public function setPrefix( $prefix )
+	{
+		$this->prefix = $prefix;
+	}
+
+	/**
+	 * @see RedBean_QueryWriter::getPrefix
+	 */
+	public function getPrefix()
+	{
+		return $this->prefix;
 	}
 }

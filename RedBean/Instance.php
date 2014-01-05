@@ -1794,6 +1794,41 @@ class RedBean_Instance
 
 		return $bean;
 	}
+
+	/**
+	 * Set prefix in query writer
+	 *
+	 * @param string $prefix
+	 */
+	public function prefix( $prefix )
+	{
+		$this->writer->setPrefix( $prefix );
+
+		// For switching instead of creating prefixes
+		if ( array_search($class, self::$alias) !== false ) {
+			if ( is_null($facade) ) {
+				R::$writer->setPrefix($prefix);
+			} else {
+				$writer = new $class($facade::$adapter, $prefix);
+
+				$facade::$writer->setPrefix($prefix);
+			}
+
+			return;
+		}
+
+		$class = self::$alias[$class];
+
+		if ( is_null($facade) ) {
+			$writer = new $class(R::$adapter, $prefix);
+
+			R::setWriter($writer);
+		} else {
+			$writer = new $class($facade::$adapter, $prefix);
+
+			$facade::setWriter($writer);
+		}
+	}
 }
 
 //Compatibility with PHP 5.2 and earlier
