@@ -16,7 +16,6 @@ class RedBean_PipelineModel extends RedBean_InstanceModel
 		} else {
 			$this->r->pipeline->add($this->bean);
 		}
-
 	}
 
 	public function after_delete()

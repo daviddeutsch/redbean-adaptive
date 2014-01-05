@@ -33,11 +33,12 @@ class RedBean_Pipeline
 	public function add( $bean )
 	{
 		$this->r->_(
-			'patch',
+			'event',
 			array(
 				'operation' => 'new',
 				'path' => $bean->getMeta('type') . '/' . $bean->id,
-				'object' => json_encode($bean)
+				'object' => json_encode($bean),
+				'created' => $this->r->isoDateTime()
 			),
 			true
 		);
@@ -54,7 +55,8 @@ class RedBean_Pipeline
 			array(
 				'operation' => 'update',
 				'path' => $bean->getMeta('type') . '/' . $bean->id,
-				'object' => json_encode($bean)
+				'object' => json_encode($bean),
+				'created' => $this->r->isoDateTime()
 			),
 			true
 		);
@@ -68,7 +70,8 @@ class RedBean_Pipeline
 			array(
 				'operation' => 'delete',
 				'path' => $bean->getMeta('type') . '/' . $bean->id,
-				'object' => json_encode($bean)
+				'object' => json_encode($bean),
+				'created' => $this->r->isoDateTime()
 			),
 			true
 		);
