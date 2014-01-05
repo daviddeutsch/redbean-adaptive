@@ -2,49 +2,25 @@
 
 class RedBean_PipelineModel extends RedBean_InstanceModel
 {
-	/**
-	 * @var RedBean_Instance
-	 */
-	private $instance;
+	private $existing = false;
 
-	public function bindInstance( $instance )
+	public function open()
 	{
-		$this->instance = $instance;
+		$this->existing = true;
 	}
 
-	public function after_update( $bean )
+	public function after_update()
 	{
-		$delta = $this->getDelta();
+		if ( $this->existing ) {
+			$this->r->pipeline->update($this->bean);
+		} else {
+			$this->r->pipeline->add($this->bean);
+		}
 
-		if ( is_null($delta) ) return;
-
-		$this->instance->pipeline->push(
-			array(
-				'action'  => 'update',
-				'type'    => $this->bean->getMeta('type'),
-				'item_id' => $this->bean->id,
-				'delta'   => json_encode($delta)
-			)
-		);
 	}
 
 	public function after_delete()
 	{
-		$this->instance->pipeline->push(
-			array(
-				'action'  => 'delete',
-				'type'    => $this->bean->getMeta('type'),
-				'item_id' => $this->bean->id
-			)
-		);
-	}
-
-	private function getDelta()
-	{
-		$delta = $this->bean->getMeta('sys.delta');
-
-		if ( empty($delta) ) return null;
-
-		return $delta;
+		$this->r->pipeline->delete($this->bean);
 	}
 }

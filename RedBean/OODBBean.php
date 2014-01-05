@@ -799,7 +799,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 			$value = $value->format( 'Y-m-d H:i:s' );
 		}
 
-		$this->addDelta($property, $this->properties[$property], $value);
+		$this->addChange($property, $this->properties[$property], $value);
 
 		$this->properties[$property] = $value;
 	}
@@ -827,15 +827,15 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 		}
 	}
 
-	private function addDelta( $property, $before, $after )
+	private function addChange( $property, $before, $after )
 	{
 
 		if ( $before !== $after ) {
-			if ( !isset($this->__info['sys.delta']) ) {
-				$this->__info['sys.delta'] = array();
+			if ( !isset($this->__info['sys.changes']) ) {
+				$this->__info['sys.changes'] = array();
 			}
 
-			$this->__info['sys.delta'][$property] = array($before, $after);
+			$this->__info['sys.changes'][$property] = array($before, $after);
 		}
 	}
 
