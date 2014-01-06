@@ -35,7 +35,7 @@ class RedBean_Pipeline
 		$this->r->_(
 			'event',
 			array(
-				'operation' => 'new',
+				'operation' => 'add',
 				'path' => $bean->getMeta('type') . '/' . $bean->id,
 				'object' => json_encode($bean),
 				'created' => $this->r->isoDateTime()
@@ -68,7 +68,7 @@ class RedBean_Pipeline
 		$this->r->_(
 			'event',
 			array(
-				'operation' => 'delete',
+				'operation' => 'remove',
 				'path' => $bean->getMeta('type') . '/' . $bean->id,
 				'object' => json_encode($bean),
 				'created' => $this->r->isoDateTime()
