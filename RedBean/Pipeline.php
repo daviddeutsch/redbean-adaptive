@@ -9,7 +9,7 @@ class RedBean_Pipeline
 
 	public function __construct( $instance )
 	{
-		$this->r = $instance;
+		$this->r = clone $instance;
 
 		$this->r->prefix('sys_pipeline_');
 	}
