@@ -251,7 +251,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	private function getRelationalTablesAndColumns( $sourceType, $destType, $noQuote = FALSE )
 	{
-		$linkTable   = $this->esc( $this->getAssocTable( array( $sourceType, $destType ) ), $noQuote );
+		$linkTable   = $this->getTable( $this->getAssocTable( array( $sourceType, $destType ) ), $noQuote );
 		$sourceCol   = $this->esc( $sourceType . '_id', $noQuote );
 
 		if ( $sourceType === $destType ) {
@@ -260,8 +260,8 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			$destCol = $this->esc( $destType . '_id', $noQuote );
 		}
 
-		$sourceTable = $this->esc( $sourceType, $noQuote );
-		$destTable   = $this->esc( $destType, $noQuote );
+		$sourceTable = $this->getTable( $sourceType, $noQuote );
+		$destTable   = $this->getTable( $destType, $noQuote );
 
 		return array( $sourceTable, $destTable, $linkTable, $sourceCol, $destCol );
 	}
@@ -407,7 +407,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$tables = $this->getTables();
 
-		return in_array( $table, $tables );
+		return in_array( $this->getTable($table), $tables );
 	}
 
 	/**
@@ -837,7 +837,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function renameAssocTable( $from, $to = NULL )
 	{
-		self::renameAssociation( $from, $to );
+		$this->renameAssociation( $from, $to );
 	}
 
 	/**
@@ -845,7 +845,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function getAssocTable( $types )
 	{
-		return self::getAssocTableFormat( $types );
+		return $this->getAssocTableFormat( $types );
 	}
 
 	/**
