@@ -312,7 +312,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$default = $this->defaultValue;
 		$suffix  = $this->getInsertSuffix( $type );
-		$table   = $this->esc( $type );
+		$table   = $this->getTable( $type );
 
 		if ( count( $insertvalues ) > 0 && is_array( $insertvalues[0] ) && count( $insertvalues[0] ) > 0 ) {
 			foreach ( $insertcolumns as $k => $v ) {
@@ -449,12 +449,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$this->check( $dbStructure );
 
-		$table = $dbStructure;
-		if ( !empty( $this->prefix ) ) {
-			$table = $this->prefix . $table;
-		}
-
-		return ( $dontQuote ) ? $table : $this->quoteCharacter . $table . $this->quoteCharacter;
+		return ( $dontQuote ) ? $dbStructure : $this->quoteCharacter . $dbStructure . $this->quoteCharacter;
 	}
 
 	/**
@@ -464,7 +459,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$table  = $type;
 		$type   = $field;
-		$table  = $this->esc( $table );
+		$table  = $this->getTable( $table );
 		$column = $this->esc( $column );
 
 		$type = ( isset( $this->typeno_sqltype[$type] ) ) ? $this->typeno_sqltype[$type] : '';
@@ -494,7 +489,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			return $id;
 		}
 
-		$table = $this->esc( $table );
+		$table = $this->getTable( $table );
 		$sql   = "UPDATE $table SET ";
 
 		$p = $v = array();
@@ -529,7 +524,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			}
 		}
 
-		$table = $this->esc( $type );
+		$table = $this->getTable( $type );
 
 		$sql   = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql   = "SELECT * FROM {$table} {$sql} -- keep-cache";
@@ -681,7 +676,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$addSql = $this->glueSQLCondition( $addSql );
 
-		$table  = $this->esc( $type );
+		$table  = $this->getTable( $type );
 
 		$sql    = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql    = "SELECT COUNT(*) FROM {$table} {$sql} -- keep-cache";
@@ -727,7 +722,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$addSql = $this->glueSQLCondition( $addSql );
 
-		$table  = $this->esc( $type );
+		$table  = $this->getTable( $type );
 
 		$sql    = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql    = "DELETE FROM {$table} {$sql}";
@@ -767,7 +762,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 		$table   = $type;
 		$type    = $datatype;
 
-		$table   = $this->esc( $table );
+		$table   = $this->getTable( $table );
 		$column  = $this->esc( $column );
 
 		$newtype = $this->typeno_sqltype[$type];
@@ -780,7 +775,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function wipe( $type )
 	{
-		$table = $this->esc( $type );
+		$table = $this->getTable( $type );
 
 		$this->adapter->exec( "TRUNCATE $table " );
 	}
@@ -790,8 +785,8 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function addFK( $type, $targetType, $field, $targetField, $isDependent = FALSE )
 	{
-		$table           = $this->esc( $type );
-		$tableNoQ        = $this->esc( $type, TRUE );
+		$table           = $this->getTable( $type );
+		$tableNoQ        = $this->getTable( $type, TRUE );
 
 		$targetTable     = $this->esc( $targetType );
 
@@ -901,15 +896,17 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	}
 
 	/**
-	 * @deprecated Use esc() instead.
-	 *
-	 * @param string  $table    table to be escaped
+	 * @param string  $table    tablename to be completed
 	 * @param boolean $noQuotes omit quotes
 	 *
 	 * @return string
 	 */
-	public function safeTable( $table, $noQuotes = FALSE )
+	public function getTable( $table, $noQuotes = FALSE )
 	{
+		if ( !empty( $this->prefix ) ) {
+			$table = $this->prefix . $table;
+		}
+
 		return $this->esc( $table, $noQuotes );
 	}
 
