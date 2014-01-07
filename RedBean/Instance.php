@@ -106,11 +106,6 @@ class RedBean_Instance
 	public $helper;
 
 	/**
-	 * @var RedBean_Pipeline
-	 */
-	public $pipeline;
-
-	/**
 	 * @var array
 	 */
 	public $plugins = array();
@@ -353,7 +348,7 @@ class RedBean_Instance
 			return FALSE;
 		}
 
-		$this->configureFacadeWithToolbox( $this->toolboxes[$key] );
+		$this->configureWithToolbox( $this->toolboxes[$key] );
 		$this->currentDB = $key;
 
 		return TRUE;
@@ -1216,7 +1211,7 @@ class RedBean_Instance
 	 *
 	 * @return RedBean_ToolBox
 	 */
-	public function configureFacadeWithToolbox( RedBean_ToolBox $tb )
+	public function configureWithToolbox( RedBean_ToolBox $tb )
 	{
 		$oldTools                 = $this->toolbox;
 
@@ -1246,9 +1241,12 @@ class RedBean_Instance
 
 		$this->x                  = new RedBean_FindHelper( $this );
 
-		$this->pipeline           = new RedBean_Pipeline( $this );
-
 		return $oldTools;
+	}
+
+	public function setupPipeline()
+	{
+		RedBean_Pipeline::configureWithInstance($this);
 	}
 
 	/**
@@ -1607,7 +1605,7 @@ class RedBean_Instance
 
 	/**
 	 * Returns the toolbox currently used by the facade.
-	 * To set the toolbox use $db->setup() or $db->configureFacadeWithToolbox().
+	 * To set the toolbox use $db->setup() or $db->configureWithToolbox().
 	 * To create a toolbox use RedBean_Setup::kickstart(). Or create a manual
 	 * toolbox using the RedBean_Toolbox class.
 	 *

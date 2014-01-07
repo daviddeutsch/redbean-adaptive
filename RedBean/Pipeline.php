@@ -5,79 +5,84 @@ class RedBean_Pipeline
 	/**
 	 * @var RedBean_Instance
 	 */
-	private $r;
+	private static $r;
 
-	public function __construct( $instance )
+	public static function configureWithInstance( $instance )
 	{
-		$this->r = clone $instance;
+		// Cheap trick to avoid recursive bs right now
+		if ( !empty(self::$r) ) return;
 
-		$this->r->prefix('sys_pipeline_');
+		self::$r = new RedBean_Instance();
+
+		self::$r->configureWithToolbox( $instance->toolbox, false );
+
+		self::$r->prefix('sys_pipeline_');
 	}
 
-	public function addExternalListener( $name )
+	public static function addExternalListener( $name )
 	{
-		$listener = $this->r->dispense('listener');
+		$listener = self::$r->dispense('listener');
 
 		$listener->name      = $name;
 		$listener->location  = 'external';
-		$listener->created   = $this->r->isoDateTime();
-		$listener->last_call = $this->r->isoDateTime();
+		$listener->created   = self::$r->isoDateTime();
+		$listener->last_call = self::$r->isoDateTime();
 
-		return $this->r->store($listener);
+		return self::$r->store($listener);
 	}
 
-	public function getUpdatesForListener( $name )
+	public static function getUpdatesForListener( $name )
 	{
-		$listener = $this->r->x->one->listener->name($name);
+		$listener = self::$r->x->one->listener->name($name);
 
-		$listener->last_call = $this->r->isoDateTime();
+		$listener->last_call = self::$r->isoDateTime();
 
-		$updates = $this->r->x->all->update->related($listener)->find();
+		$updates = self::$r->x->all->update->related($listener)->find();
 
 		$output = array();
 		foreach ( $updates as $update ) {
 			$output[] = $update->export();
 
-			$this->r->unassociate($listener, $update);
+			self::$r->unassociate($listener, $update);
 		}
 	}
 
-	public function subscribe( $listener, $resource )
+	public static function subscribe( $listener, $resource )
 	{
-		$listener = $this->r->x->one->listener->name($listener)->find();
+		$listener = self::$r->x->one->listener->name($listener)->find();
 
 		if ( empty($listener->id) ) return false;
 
-		$resource = $this->r->x->one->resource->path($resource)->find(true);
+		$resource = self::$r->x->one->resource->path($resource)->find(true);
 
-		return $this->r->associate($resource, $listener);
+		return self::$r->associate($resource, $listener);
 	}
 
-	public function emit( $update )
+	public static function emit( $update )
 	{
 		// TODO: Rework to support genuine path support w/ permutations
 		$listeners = array_unique(
 			array_merge(
-				$this->r->x->resource
+				self::$r->x->resource
 					->path($update->path)->find(true)->sharedListener,
-				$this->r->x->resource
+				self::$r->x->resource
 					->path($update->type)->find(true)->sharedListener
 			)
 		);
 
 		foreach( $listeners as $listener ) {
 			if ( $listener->location == 'external' ) {
-				$this->r->associate($listener, $update);
+				self::$r->associate($listener, $update);
 			} else {
 				// TODO: Support internal callbacks
 			}
 		}
 	}
 
-	public function add( $bean )
+	public static function add( $bean )
 	{
-		$this->emit(
-			$this->r->_(
+		self::emit(
+			self::$r->_(
 				'update',
 				array(
 					'operation' => 'add',
@@ -85,21 +90,21 @@ class RedBean_Pipeline
 					'type' => $bean->getMeta('type'),
 					'object_id' => $bean->id,
 					'object' => json_encode($bean),
-					'created' => $this->r->isoDateTime()
+					'created' => self::$r->isoDateTime()
 				),
 				true
 			)
 		);
 	}
 
-	public function update( $bean )
+	public static function update( $bean )
 	{
 		$changes = $bean->getMeta('sys.changes');
 
 		if ( empty($changes) ) return;
 
-		$this->emit(
-			$this->r->_(
+		self::emit(
+			self::$r->_(
 				'update',
 				array(
 					'operation' => 'update',
@@ -107,7 +112,7 @@ class RedBean_Pipeline
 					'type' => $bean->getMeta('type'),
 					'object_id' => $bean->id,
 					'object' => json_encode($bean),
-					'created' => $this->r->isoDateTime()
+					'created' => self::$r->isoDateTime()
 				),
 				true
 			)
@@ -115,10 +120,10 @@ class RedBean_Pipeline
 	}
 
 
-	public function delete( $bean )
+	public static function delete( $bean )
 	{
-		$this->emit(
-			$this->r->_(
+		self::emit(
+			self::$r->_(
 				'update',
 				array(
 					'operation' => 'remove',
@@ -126,7 +131,7 @@ class RedBean_Pipeline
 					'type' => $bean->getMeta('type'),
 					'object_id' => $bean->id,
 					'object' => json_encode($bean),
-					'created' => $this->r->isoDateTime()
+					'created' => self::$r->isoDateTime()
 				),
 				true
 			)

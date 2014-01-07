@@ -12,14 +12,14 @@ class RedBean_PipelineModel extends RedBean_InstanceModel
 	public function after_update()
 	{
 		if ( $this->existing ) {
-			$this->r->pipeline->update($this->bean);
+			RedBean_Pipeline::update($this->bean);
 		} else {
-			$this->r->pipeline->add($this->bean);
+			RedBean_Pipeline::add($this->bean);
 		}
 	}
 
 	public function after_delete()
 	{
-		$this->r->pipeline->delete($this->bean);
+		RedBean_Pipeline::delete($this->bean);
 	}
 }
