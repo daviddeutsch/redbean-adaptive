@@ -62,10 +62,8 @@ class RedBean_Pipeline
 		// TODO: Rework to support genuine path support w/ permutations
 		$listeners = array_unique(
 			array_merge(
-				self::$r->x->resource
-					->path($update->path)->find(true)->sharedListener,
-				self::$r->x->resource
-					->path($update->type)->find(true)->sharedListener
+				self::$r->x->resource->path($update->path)->find(true)->sharedListener,
+				self::$r->x->resource->path($update->type)->find(true)->sharedListener
 			)
 		);
 

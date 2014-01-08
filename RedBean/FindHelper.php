@@ -5,7 +5,7 @@ class RedBean_FindHelper
 	/**
 	 * @var RedBean_Instance
 	 */
-	protected $instance;
+	protected $r;
 
 	protected $type;
 
@@ -23,9 +23,9 @@ class RedBean_FindHelper
 
 	protected $find = '';
 
-	public function __construct( $instance )
+	public function __construct( $r )
 	{
-		$this->instance =& $instance;
+		$this->r =& $r;
 	}
 
 	/**
@@ -39,13 +39,13 @@ class RedBean_FindHelper
 			$ft = 'find' . ucfirst($this->find);
 
 			if ( $this->params ) {
-				$r = $this->instance->$ft( $this->type, $this->makeQuery(), $this->params );
+				$r = $this->r->$ft( $this->type, $this->makeQuery(), $this->params );
 			} else {
-				$r = $this->instance->$ft( $this->type );
+				$r = $this->r->$ft( $this->type );
 			}
 
 			if ( !empty($this->preload) ) {
-				$this->instance->preload($r, $this->preload);
+				$this->r->preload($r, $this->preload);
 			}
 
 			if ( !is_array($r) && !empty($r) ) {
@@ -57,9 +57,9 @@ class RedBean_FindHelper
 			$rt = 'related' . ucfirst($this->find);
 
 			if ( $this->params ) {
-				$r = $this->instance->$rt( $this->related[0], $this->type, $this->makeQuery(), $this->params );
+				$r = $this->r->$rt( $this->related[0], $this->type, $this->makeQuery(), $this->params );
 			} else {
-				$r = $this->instance->$rt( $this->related[0], $this->type );
+				$r = $this->r->$rt( $this->related[0], $this->type );
 			}
 
 			if ( !is_array($r) && !empty($r) ) {
@@ -71,7 +71,7 @@ class RedBean_FindHelper
 					if ($k === 0) continue;
 
 					foreach ( $this->related as $bean ) {
-						if ( !$this->instance->areRelated($b, $bean) ) {
+						if ( !$this->r->areRelated($b, $bean) ) {
 							unset( $r[$k] );
 						}
 					}
@@ -80,10 +80,10 @@ class RedBean_FindHelper
 		}
 
 		if ( $force_make && empty($r) ) {
-			$r = array( $this->instance->_($this->type, $this->params_plain, true) );
+			$r = array( $this->r->_($this->type, $this->params_plain, true) );
 
 			if ( !empty( $this->related ) ) {
-				$this->instance->associate( $r[0], $this->related );
+				$this->r->associate( $r[0], $this->related );
 			}
 		}
 
@@ -106,11 +106,11 @@ class RedBean_FindHelper
 	public function count()
 	{
 		if ( empty($this->related) ) {
-			$r = $this->instance->count( $this->type, $this->makeQuery(), $this->params );
+			$r = $this->r->count( $this->type, $this->makeQuery(), $this->params );
 		} else {
 			$r = 0;
 			foreach ( $this->related as $bean ) {
-				$r += $this->instance->relatedCount( $bean, $this->type, $this->makeQuery(), $this->params );
+				$r += $this->r->relatedCount( $bean, $this->type, $this->makeQuery(), $this->params );
 			}
 		}
 
@@ -162,14 +162,14 @@ class RedBean_FindHelper
 	 * Instead of carrying out a search, return an Iterator that
 	 * can be used in a foreach loop
 	 *
-	 * foreach( $this->instance->$x->user->age(26) as $user ) {
+	 * foreach( $this->r->$x->user->age(26) as $user ) {
 	 *     // Do something
 	 * }
 	 */
 	public function iterate()
 	{
 		// TODO!
-		//$ps = $this->instance->$adapter->$db->query("SELECT * FROM accounts");
+		//$ps = $this->r->$adapter->$db->query("SELECT * FROM accounts");
 
 		/*return new NoRewindIterator(
 			new IteratorIterator( $ps )
@@ -179,6 +179,8 @@ class RedBean_FindHelper
 	public function free()
 	{
 		foreach ( $this as $k => $v ) {
+			if ( $k == 'r' ) continue;
+
 			$this->$k = is_array( $v ) ? array() : null;
 		}
 	}
