@@ -18,7 +18,6 @@
  */
 class RedBean_OODB extends RedBean_Observable
 {
-
 	/**
 	 * @var array
 	 */
@@ -676,6 +675,11 @@ class RedBean_OODB extends RedBean_Observable
 	public function setBeanHelper( RedBean_BeanHelper $beanhelper )
 	{
 		$this->beanhelper = $beanhelper;
+	}
+
+	public function getBeanHelper()
+	{
+		return $this->beanhelper;
 	}
 
 	/**

@@ -325,7 +325,7 @@ class RedBean_Instance
 	 */
 	public function addDatabase( $key, $dsn, $user = NULL, $pass = NULL, $frozen = FALSE, $autoSetEncoding = TRUE )
 	{
-		$this->toolboxes[$key] = RedBean_Setup::kickstart( $this, $dsn, $user, $pass, $frozen, $autoSetEncoding );
+		$this->toolboxes[$key] = RedBean_Setup::kickstart( $dsn, $user, $pass, $frozen, $autoSetEncoding );
 	}
 
 	/**
@@ -1229,11 +1229,13 @@ class RedBean_Instance
 		$this->labelMaker         = new RedBean_LabelMaker( $this->toolbox );
 		$this->extAssocManager    = new RedBean_AssociationManager_ExtAssociationManager( $this->toolbox );
 
-		$this->helper             = new RedBean_ModelHelper( $this );
+		$this->helper             =& $this->redbean->getBeanHelper();
 
-		$this->helper->attachEventListeners( $this->redbean );
+		$modelhelper              =& $this->helper->getModelHelper();
 
-		$this->associationManager->addEventListener( 'delete', $this->helper );
+		$modelhelper->attachEventListeners( $this->redbean );
+
+		$this->associationManager->addEventListener( 'delete', $modelhelper );
 
 		$this->duplicationManager = new RedBean_DuplicationManager( $this->toolbox );
 		$this->tagManager         = new RedBean_TagManager( $this->toolbox );

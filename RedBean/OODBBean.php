@@ -785,7 +785,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 
 				return;
 			} else {
-				throw new RedBean_Exception_Security( 'Cannot cast to bean.' );
+				throw new RedBean_Exception_Security( 'Cannot cast ' . json_encode($value) . ' to bean->' . $property );
 			}
 		}
 

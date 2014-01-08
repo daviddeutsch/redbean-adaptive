@@ -22,7 +22,7 @@ class RedBean_FindHelper
 
 	public function __construct( $instance )
 	{
-		$this->instance = $instance;
+		$this->instance =& $instance;
 	}
 
 	/**

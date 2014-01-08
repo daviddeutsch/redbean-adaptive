@@ -57,6 +57,11 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 		return $obj;
 	}
 
+	public function getModelHelper()
+	{
+		return $this->helper;
+	}
+
 	/**
 	 * @see RedBean_BeanHelper::getWriterRedbean
 	 */

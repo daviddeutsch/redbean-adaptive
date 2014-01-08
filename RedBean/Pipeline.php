@@ -12,9 +12,7 @@ class RedBean_Pipeline
 		// Cheap trick to avoid recursive bs right now
 		if ( !empty(self::$r) ) return;
 
-		self::$r = new RedBean_Instance();
-
-		self::$r->configureWithToolbox( $instance->toolbox, false );
+		self::$r = clone $instance;
 
 		self::$r->prefix('sys_pipeline_');
 	}
@@ -88,7 +86,7 @@ class RedBean_Pipeline
 					'operation' => 'add',
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
-					'object_id' => $bean->id,
+					'objectid' => $bean->id,
 					'object' => json_encode($bean),
 					'created' => self::$r->isoDateTime()
 				),
@@ -110,7 +108,7 @@ class RedBean_Pipeline
 					'operation' => 'update',
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
-					'object_id' => $bean->id,
+					'objectid' => $bean->id,
 					'object' => json_encode($bean),
 					'created' => self::$r->isoDateTime()
 				),
@@ -129,7 +127,7 @@ class RedBean_Pipeline
 					'operation' => 'remove',
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
-					'object_id' => $bean->id,
+					'objectid' => $bean->id,
 					'object' => json_encode($bean),
 					'created' => self::$r->isoDateTime()
 				),

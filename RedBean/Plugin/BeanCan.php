@@ -48,7 +48,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 */
 	public function __construct( $instance )
 	{
-		$this->instance = $instance;
+		$this->instance =& $instance;
 
 		$this->modelHelper = new RedBean_ModelHelper($this->instance);
 	}
