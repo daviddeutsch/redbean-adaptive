@@ -334,7 +334,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function createTable( $table )
 	{
-		$table = $this->esc( $table );
+		$table = $this->getTable( $table );
 
 		$sql   = "CREATE TABLE $table ( id INTEGER PRIMARY KEY AUTOINCREMENT ) ";
 
@@ -346,7 +346,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function getColumns( $table )
 	{
-		$table      = $this->esc( $table, TRUE );
+		$table      = $this->getTable( $table, TRUE );
 
 		$columnsRaw = $this->adapter->get( "PRAGMA table_info('$table')" );
 
@@ -361,7 +361,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function addUniqueIndex( $type, $columns )
 	{
-		$name  = 'UQ_' . $this->esc( $type, TRUE ) . implode( '__', $columns );
+		$name  = 'UQ_' . $this->getTable( $type, TRUE ) . implode( '__', $columns );
 
 		$t     = $this->getTable( $type );
 
@@ -391,7 +391,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = $this->esc( $table );
+		$table  = $this->getTable( $table );
 
 		$name   = preg_replace( '/\W/', '', $name );
 		$column = $this->esc( $column, TRUE );

@@ -12,7 +12,8 @@ class RedBean_Pipeline
 		// Cheap trick to avoid recursive bs right now
 		if ( !empty(self::$r) ) return;
 
-		self::$r = clone $instance;
+		self::$r = new RedBean_Instance();
+		self::$r->configureWithToolbox($instance->toolbox);
 
 		self::$r->prefix('sys_pipeline_');
 	}

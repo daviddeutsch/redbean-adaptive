@@ -2,6 +2,9 @@
 
 class RedBean_FindHelper
 {
+	/**
+	 * @var RedBean_Instance
+	 */
 	protected $instance;
 
 	protected $type;

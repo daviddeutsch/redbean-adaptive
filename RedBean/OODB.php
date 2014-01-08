@@ -176,7 +176,7 @@ class RedBean_OODB extends RedBean_Observable
 	private function createTableIfNotExists( RedBean_OODBBean $bean, $table )
 	{
 		//Does table exist? If not, create
-		if ( !$this->isFrozen && !$this->tableExists( $table, TRUEs ) ) {
+		if ( !$this->isFrozen && !$this->tableExists( $table, TRUE ) ) {
 			$this->writer->createTable( $table );
 			$bean->setMeta( 'buildreport.flags.created', TRUE );
 		}

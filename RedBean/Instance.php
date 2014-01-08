@@ -349,6 +349,7 @@ class RedBean_Instance
 		}
 
 		$this->configureWithToolbox( $this->toolboxes[$key] );
+
 		$this->currentDB = $key;
 
 		return TRUE;

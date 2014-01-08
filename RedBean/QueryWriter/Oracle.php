@@ -170,8 +170,8 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function addUniqueIndex( $table, $columns )
 	{
-		$tableNoQuote   = strtoupper( $this->esc( $table, TRUE ) );
-		$tableWithQuote = strtoupper( $this->esc( $table ) );
+		$tableNoQuote   = strtoupper( $this->getTable( $table, TRUE ) );
+		$tableWithQuote = strtoupper( $this->getTable( $table ) );
 
 		sort( $columns ); //else we get multiple indexes due to order-effects
 
@@ -299,7 +299,7 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = strtoupper( $this->esc( $table ) );
+		$table  = strtoupper( $this->getTable( $table ) );
 
 		$name   = $this->limitOracleIdentifierLength( preg_replace( '/\W/', '', $name ) );
 		$column = strtoupper( $this->esc( $column ) );
@@ -329,8 +329,8 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 			throw new Exception( $table . ' is not lowercase. With ORACLE you MUST only use lowercase table in PHP, sorry!' );
 		}
 
-		$table_with_quotes         = strtoupper( $this->esc( $table ) );
-		$safe_table_without_quotes = strtoupper( $this->esc( $table, TRUE ) );
+		$table_with_quotes         = strtoupper( $this->getTable( $table ) );
+		$safe_table_without_quotes = strtoupper( $this->getTable( $table, TRUE ) );
 
 		$sql = "CREATE TABLE $table_with_quotes(
                 ID NUMBER(11) NOT NULL,
@@ -422,7 +422,7 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function getColumns( $table )
 	{
-		$table      = $this->esc( $table, TRUE );
+		$table      = $this->getTable( $table, TRUE );
 		$columnsRaw = $this->adapter->get( "SELECT LOWER(COLUMN_NAME) COLUMN_NAME, DATA_TYPE, DATA_LENGTH, DATA_PRECISION FROM ALL_TAB_COLUMNS WHERE TABLE_NAME = UPPER('$table')" );
 
 		$columns = array();
@@ -486,7 +486,7 @@ class RedBean_QueryWriter_Oracle extends RedBean_QueryWriter_AQueryWriter implem
 		$table   = $type;
 		$type    = $datatype;
 
-		$table   = strtoupper( $this->esc( $table ) );
+		$table   = strtoupper( $this->getTable( $table ) );
 		$column  = strtoupper( $this->esc( $column ) );
 
 		$newtype = array_key_exists( $type, $this->typeno_sqltype ) ? $this->typeno_sqltype[$type] : '';
