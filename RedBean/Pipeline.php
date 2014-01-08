@@ -78,6 +78,9 @@ class RedBean_Pipeline
 		}
 	}
 
+	/**
+	 * @param $bean \RedBean_OODBBean
+	 */
 	public static function add( $bean )
 	{
 		self::emit(
@@ -88,7 +91,7 @@ class RedBean_Pipeline
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
 					'objectid' => $bean->id,
-					'object' => json_encode($bean),
+					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
 				),
 				true
@@ -96,6 +99,9 @@ class RedBean_Pipeline
 		);
 	}
 
+	/**
+	 * @param $bean \RedBean_OODBBean
+	 */
 	public static function update( $bean )
 	{
 		$changes = $bean->getMeta('sys.changes');
@@ -110,7 +116,7 @@ class RedBean_Pipeline
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
 					'objectid' => $bean->id,
-					'object' => json_encode($bean),
+					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
 				),
 				true
@@ -118,7 +124,9 @@ class RedBean_Pipeline
 		);
 	}
 
-
+	/**
+	 * @param $bean \RedBean_OODBBean
+	 */
 	public static function delete( $bean )
 	{
 		self::emit(
@@ -129,7 +137,7 @@ class RedBean_Pipeline
 					'path' => $bean->getMeta('type') . '/' . $bean->id,
 					'type' => $bean->getMeta('type'),
 					'objectid' => $bean->id,
-					'object' => json_encode($bean),
+					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
 				),
 				true

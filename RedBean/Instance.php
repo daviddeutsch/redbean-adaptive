@@ -1240,6 +1240,7 @@ class RedBean_Instance
 
 		$this->duplicationManager = new RedBean_DuplicationManager( $this->toolbox );
 		$this->tagManager         = new RedBean_TagManager( $this->toolbox );
+
 		$this->f                  = new RedBean_SQLHelper( $this->adapter );
 
 		$this->x                  = new RedBean_FindHelper( $this );
