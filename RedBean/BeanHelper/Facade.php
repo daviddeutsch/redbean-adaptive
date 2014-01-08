@@ -17,28 +17,27 @@
 class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 {
 	/**
-	 * @var RedBean_Instance
+	 * @var RedBean_QueryWriter_AQueryWriter
 	 */
-	private $instance;
+	private $writer;
+
+	/**
+	 * @var RedBean_OODB
+	 */
+	private $redbean;
 
 	/**
 	 * @var RedBean_ModelHelper
 	 */
 	private $helper;
 
-	public function __construct( $instance )
+	public function __construct( $writer, $redbean )
 	{
-		$this->instance = $instance;
+		$this->writer =& $writer;
 
-		$this->helper = new RedBean_ModelHelper($this->instance);
-	}
+		$this->redbean =& $redbean;
 
-	/**
-	 * @see RedBean_BeanHelper::getInstance
-	 */
-	public function getInstance()
-	{
-		return $this->instance;
+		$this->helper = new RedBean_ModelHelper();
 	}
 
 	/**
@@ -59,13 +58,11 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 	}
 
 	/**
-	 * @see RedBean_BeanHelper::getExtractedToolbox
+	 * @see RedBean_BeanHelper::getWriterRedbean
 	 */
-	public function getExtractedToolbox()
+	public function getWriterRedbean()
 	{
-		$toolbox = $this->instance->getToolbox();
-
-		return array( $toolbox->getRedBean(), $toolbox->getDatabaseAdapter(), $toolbox->getWriter(), $toolbox );
+		return array( $this->writer, $this->redbean );
 	}
 
 	/**

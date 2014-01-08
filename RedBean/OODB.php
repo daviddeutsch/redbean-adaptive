@@ -177,7 +177,7 @@ class RedBean_OODB extends RedBean_Observable
 	private function createTableIfNotExists( RedBean_OODBBean $bean, $table )
 	{
 		//Does table exist? If not, create
-		if ( !$this->isFrozen && !$this->tableExists( $this->writer->getTable( $table, TRUE ) ) ) {
+		if ( !$this->isFrozen && !$this->tableExists( $table, TRUEs ) ) {
 			$this->writer->createTable( $table );
 			$bean->setMeta( 'buildreport.flags.created', TRUE );
 		}
@@ -589,13 +589,13 @@ class RedBean_OODB extends RedBean_Observable
 	 *
 	 * @param RedBean_QueryWriter $writer writer
 	 */
-	public function __construct( RedBean_QueryWriter $writer, $instance )
+	public function __construct( RedBean_QueryWriter $writer )
 	{
 		if ( $writer instanceof RedBean_QueryWriter ) {
 			$this->writer = $writer;
 		}
 
-		$this->beanhelper = new RedBean_BeanHelper_Facade( $instance );
+		$this->beanhelper = new RedBean_BeanHelper_Facade( $writer, $this );
 	}
 
 	/**

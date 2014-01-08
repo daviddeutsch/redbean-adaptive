@@ -116,10 +116,8 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 	 *
 	 * @return array
 	 */
-	private function getSharedList( $type, $redbean, $toolbox )
+	private function getSharedList( $type, $redbean, $writer )
 	{
-		$writer = $toolbox->getWriter();
-
 		if ( $this->via ) {
 			$oldName = $writer->getAssocTable( array( $this->__info['type'], $type ) );
 			if ( $oldName !== $this->via ) {
@@ -656,7 +654,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 		if ( !$this->flagSkipBeau ) $property = $this->beau( $property );
 
 		if ( $this->beanHelper ) {
-			list( $redbean, , , $toolbox ) = $this->beanHelper->getExtractedToolbox();
+			list( $writer, $redbean ) = $this->beanHelper->getWriterRedbean();
 		}
 
 		$isOwn    = strpos( $property, 'own' ) === 0 && ctype_upper( substr( $property, 3, 1 ) );
@@ -731,7 +729,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 			if ( $isOwn ) {
 				$beans = $this->getOwnList( $listName, $redbean );
 			} else {
-				$beans = $this->getSharedList( lcfirst( substr( $property, 6 ) ), $redbean, $toolbox );
+				$beans = $this->getSharedList( lcfirst( substr( $property, 6 ) ), $redbean, $writer );
 			}
 
 			$this->properties[$property] = $beans;

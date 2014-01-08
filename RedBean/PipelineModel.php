@@ -1,6 +1,6 @@
 <?php
 
-class RedBean_PipelineModel extends RedBean_InstanceModel
+class RedBean_PipelineModel extends RedBean_SimpleModel
 {
 	private $existing = false;
 

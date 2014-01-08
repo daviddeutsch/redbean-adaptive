@@ -49,7 +49,7 @@ class RedBean_Setup
 	 *
 	 * @return RedBean_ToolBox
 	 */
-	public static function kickstart( $instance, $dsn, $username = NULL, $password = NULL, $frozen = FALSE, $autoSetEncoding = TRUE )
+	public static function kickstart( $dsn, $username = NULL, $password = NULL, $frozen = FALSE, $autoSetEncoding = TRUE )
 	{
 		if ( $dsn instanceof PDO ) {
 			$db  = new RedBean_Driver_PDO( $dsn );
@@ -78,7 +78,7 @@ class RedBean_Setup
 			$writer = new RedBean_QueryWriter_MySQL( $adapter );
 		}
 
-		$redbean = new RedBean_OODB( $writer, $instance );
+		$redbean = new RedBean_OODB( $writer );
 
 		if ( $frozen ) {
 			$redbean->freeze( TRUE );

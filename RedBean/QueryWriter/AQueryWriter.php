@@ -407,7 +407,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$tables = $this->getTables();
 
-		return in_array( $this->getTable($table), $tables );
+		return in_array( $this->getTable($table, true), $tables );
 	}
 
 	/**
@@ -904,7 +904,9 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	public function getTable( $table, $noQuotes = FALSE )
 	{
 		if ( !empty( $this->prefix ) ) {
-			$table = $this->prefix . $table;
+			if ( strpos($table, $this->prefix) !== 0 ) {
+				$table = $this->prefix . $table;
+			}
 		}
 
 		return $this->esc( $table, $noQuotes );
