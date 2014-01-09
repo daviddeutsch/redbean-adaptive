@@ -1232,11 +1232,7 @@ class RedBean_Instance
 
 		$this->helper             =& $this->redbean->getBeanHelper();
 
-		$modelhelper              =& $this->helper->getModelHelper();
-
-		$modelhelper->attachEventListeners( $this->redbean );
-
-		$this->associationManager->addEventListener( 'delete', $modelhelper );
+		$this->associationManager->addEventListener( 'delete', $this->redbean->beanhelper->helper );
 
 		$this->duplicationManager = new RedBean_DuplicationManager( $this->toolbox );
 		$this->tagManager         = new RedBean_TagManager( $this->toolbox );

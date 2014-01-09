@@ -29,7 +29,7 @@ class RedBean_BeanHelper_Facade implements RedBean_BeanHelper
 	/**
 	 * @var RedBean_ModelHelper
 	 */
-	private $helper;
+	public $helper;
 
 	public function __construct( $writer, $redbean )
 	{

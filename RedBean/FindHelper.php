@@ -23,9 +23,9 @@ class RedBean_FindHelper
 
 	protected $find = '';
 
-	public function __construct( $r )
+	public function __construct( $instance )
 	{
-		$this->r =& $r;
+		$this->r =& $instance;
 	}
 
 	/**

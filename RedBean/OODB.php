@@ -49,14 +49,14 @@ class RedBean_OODB extends RedBean_Observable
 	protected $isFrozen = FALSE;
 
 	/**
-	 * @var RedBean_BeanHelper_Facade
-	 */
-	protected $beanhelper = NULL;
-
-	/**
 	 * @var RedBean_AssociationManager
 	 */
 	protected $assocManager = NULL;
+
+	/**
+	 * @var RedBean_BeanHelper_Facade
+	 */
+	public $beanhelper = NULL;
 
 	/**
 	 * Handles Exceptions. Suppresses exceptions caused by missing structures.
@@ -591,10 +591,12 @@ class RedBean_OODB extends RedBean_Observable
 	public function __construct( RedBean_QueryWriter $writer )
 	{
 		if ( $writer instanceof RedBean_QueryWriter ) {
-			$this->writer = $writer;
+			$this->writer =& $writer;
 		}
 
-		$this->beanhelper = new RedBean_BeanHelper_Facade( $writer, $this );
+		$this->beanhelper = new RedBean_BeanHelper_Facade( $this->writer, $this );
+
+		$this->beanhelper->helper->attachEventListeners($this);
 	}
 
 	/**
