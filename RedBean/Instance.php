@@ -1230,8 +1230,6 @@ class RedBean_Instance
 		$this->labelMaker         = new RedBean_LabelMaker( $this->toolbox );
 		$this->extAssocManager    = new RedBean_AssociationManager_ExtAssociationManager( $this->toolbox );
 
-		$this->helper             =& $this->redbean->getBeanHelper();
-
 		$this->associationManager->addEventListener( 'delete', $this->redbean->beanhelper->helper );
 
 		$this->duplicationManager = new RedBean_DuplicationManager( $this->toolbox );
