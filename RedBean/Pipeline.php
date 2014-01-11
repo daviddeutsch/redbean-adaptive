@@ -13,7 +13,17 @@ class RedBean_Pipeline
 		if ( !empty(self::$r) ) return;
 
 		self::$r = new RedBean_Instance();
-		self::$r->configureWithToolbox($instance->toolbox);
+
+		$writer = new \RedBean_QueryWriter_MySQL( $instance->toolbox->getDatabaseAdapter() );
+		$redbean = new \RedBean_OODB( $writer );
+
+		$toolbox = new \RedBean_ToolBox(
+			$redbean,
+			$instance->toolbox->getDatabaseAdapter(),
+			$writer
+		);
+
+		self::$r->configureWithToolbox($toolbox);
 
 		self::$r->prefix('sys_pipeline_');
 	}
