@@ -79,8 +79,8 @@ class RedBean_Finder
 	public function findAndExport( $type, $sql = NULL, $bindings = array() )
 	{
 		$arr = array();
-		foreach ( $this->find( $type, $sql, $bindings ) as $key => $item ) {
-			$arr[$key] = $item->export();
+		foreach ( $this->find( $type, $sql, $bindings ) as $item ) {
+			$arr[] = $item->export();
 		}
 
 		return $arr;
