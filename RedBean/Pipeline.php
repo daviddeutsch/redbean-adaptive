@@ -28,45 +28,74 @@ class RedBean_Pipeline
 		self::$r->prefix('sys_pipeline_');
 	}
 
-	public static function addExternalListener( $name )
+	public static function addSubscriber( $name, $callback=null )
 	{
-		$listener = self::$r->dispense('listener');
-
-		$listener->name      = $name;
-		$listener->location  = 'external';
-		$listener->created   = self::$r->isoDateTime();
-		$listener->last_call = self::$r->isoDateTime();
-
-		return self::$r->store($listener);
+		return self::$r->_(
+			'subscriber',
+			array(
+				'name' => $name,
+				'created' => self::$r->isoDateTime(),
+				'callback' => $callback
+			),
+			true
+		);
 	}
 
-	public static function getUpdatesForListener( $name )
+	public static function doesSubscriberExist( $name )
 	{
-		$listener = self::$r->x->one->listener->name($name);
+		$subscriber = self::$r->x->one->subscriber->name($name)->find();
 
-		$listener->last_call = self::$r->isoDateTime();
+		return !empty($subscriber->id);
+	}
 
-		$updates = self::$r->x->all->update->related($listener)->find();
+	public static function getUpdatesForSubscriber( $name )
+	{
+		$subscriber = self::$r->x->one->subscriber->name($name)->find();
+
+		if ( empty($subscriber->id) ) return null;
+
+		$updates = self::$r->x->all->update->related($subscriber)->find();
+
+		if ( empty($updates) ) return null;
 
 		$output = array();
 		foreach ( $updates as $update ) {
 			$output[] = $update->export();
 
-			self::$r->unassociate($listener, $update);
+			self::$r->unassociate($subscriber, $update);
 		}
 
 		return $output;
 	}
 
+	public static function addPublisher( $name )
+	{
+		return self::$r->_(
+			'publisher',
+			array(
+				'name' => $name,
+				'created' => self::$r->isoDateTime()
+			),
+			true
+		);
+	}
+
+	public static function doesPublisherExist( $name )
+	{
+		$publisher = self::$r->x->one->publisher->name($name)->find();
+
+		return !empty($publisher->id);
+	}
+
 	public static function subscribe( $listener, $resource )
 	{
-		$listener = self::$r->x->one->listener->name($listener)->find();
+		$subscriber = self::$r->x->one->listener->name($listener)->find();
 
-		if ( empty($listener->id) ) return false;
+		if ( empty($subscriber->id) ) return false;
 
 		$resource = self::$r->x->one->resource->path($resource)->find(true);
 
-		return self::$r->associate($resource, $listener);
+		return self::$r->associate($resource, $subscriber);
 	}
 
 	public static function emit( $update )
@@ -76,27 +105,44 @@ class RedBean_Pipeline
 
 		if ( empty($resource_exact->id) && empty($resource_type->id) ) return;
 
-		$listeners = array();
+		$subscribers = array();
 
 		if ( !empty($resource_exact->id) ) {
-			$listeners = array_unique(
-				array_merge($listeners, $resource_exact->sharedListener)
+			$subscribers = array_unique(
+				array_merge($subscribers, $resource_exact->sharedSubscriber)
 			);
 		}
 
 		if ( !empty($resource_type->id) ) {
-			$listeners = array_unique(
-				array_merge($listeners, $resource_type->sharedListener)
+			$subscribers = array_unique(
+				array_merge($subscribers, $resource_type->sharedSubscriber)
 			);
 		}
 
-		if ( empty($listeners) ) return;
+		if ( empty($subscribers) ) return;
 
-		foreach( $listeners as $listener ) {
-			if ( $listener->location == 'external' ) {
-				self::$r->associate($listener, $update);
+		foreach( $subscribers as $subscriber ) {
+			if ( empty($subscriber->callback) ) {
+				// No callback, so this will be stashed for retrieval by the subscriber
+				self::$r->associate($subscriber, $update);
 			} else {
 				// TODO: Support internal callbacks
+
+				/*
+				 * Most likely, this would be one or more callback observers
+				 * that are submitted when the Pipeline is set up. Then, we
+				 * could allow stuff like:
+				 *
+				 * RedBean_Pipeline::addCallbackObserver( 'my', new myObserver() );
+				 *
+				 * RedBean_Pipeline::addSubscriber(
+				 *    'test_subscriber',
+				 *    'my.customMethod'
+				 * );
+				 *
+				 * When the update is emitted, myObserver::customMethod(); is
+				 * called with the update as only input.
+				 */
 			}
 		}
 	}
