@@ -54,6 +54,8 @@ class RedBean_Pipeline
 
 			self::$r->unassociate($listener, $update);
 		}
+
+		return $output;
 	}
 
 	public static function subscribe( $listener, $resource )
