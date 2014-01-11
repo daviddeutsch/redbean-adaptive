@@ -63,6 +63,11 @@ class RedBean_Pipeline
 		return !empty($subscriber->id);
 	}
 
+	public static function getSubscriber( $name )
+	{
+		return self::$r->x->one->subscriber->name($name)->find();
+	}
+
 	public static function removeSubscriber( $name )
 	{
 		$subscriber = self::$r->x->one->subscriber->name($name)->find();
@@ -125,6 +130,11 @@ class RedBean_Pipeline
 		$publisher = self::$r->x->one->publisher->name($name)->find();
 
 		return !empty($publisher->id);
+	}
+
+	public static function getPublisher( $name )
+	{
+		return self::$r->x->one->publisher->name($name)->find();
 	}
 
 	public static function removePublisher( $name )
