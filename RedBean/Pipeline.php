@@ -92,13 +92,29 @@ class RedBean_Pipeline
 		return $output;
 	}
 
-	public static function addPublisher( $name )
+	public static function addPublisher( $details )
 	{
+		$expected = array('name', 'callback', 'lease_seconds', 'secret');
+
+		foreach ( $expected as $k ) {
+			if ( !isset($details->$k) ) {
+				$details->$k = '';
+			}
+		}
+
+		$expiration = 0;
+		if ( !empty($details->lease_seconds) ) {
+			$expiration = time() + $details->lease_seconds;
+		}
+
 		return self::$r->_(
 			'publisher',
 			array(
-				'name' => $name,
-				'created' => self::$r->isoDateTime()
+				'name' => $details->name,
+				'callback' => $details->callback,
+				'secret' => $details->secret,
+				'created' => self::$r->isoDateTime(),
+				'expires' => self::$r->isoDateTime($expiration)
 			),
 			true
 		);
