@@ -69,13 +69,26 @@ class RedBean_Pipeline
 
 	public static function emit( $update )
 	{
-		// TODO: Rework to support genuine path support w/ permutations
-		$listeners = array_unique(
-			array_merge(
-				self::$r->x->resource->path($update->path)->find(true)->sharedListener,
-				self::$r->x->resource->path($update->type)->find(true)->sharedListener
-			)
-		);
+		$resource_exact = self::$r->x->resource->path($update->path)->find();
+		$resource_type  = self::$r->x->resource->path($update->type)->find();
+
+		if ( empty($resource_exact->id) && empty($resource_type->id) ) return;
+
+		$listeners = array();
+
+		if ( !empty($resource_exact->id) ) {
+			$listeners = array_unique(
+				array_merge($listeners, $resource_exact->sharedListener)
+			);
+		}
+
+		if ( !empty($resource_type->id) ) {
+			$listeners = array_unique(
+				array_merge($listeners, $resource_type->sharedListener)
+			);
+		}
+
+		if ( empty($listeners) ) return;
 
 		foreach( $listeners as $listener ) {
 			if ( $listener->location == 'external' ) {
