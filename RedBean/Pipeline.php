@@ -28,14 +28,29 @@ class RedBean_Pipeline
 		self::$r->prefix('sys_pipeline_');
 	}
 
-	public static function addSubscriber( $name, $callback=null )
+	public static function addSubscriber( $details )
 	{
+		$expected = array('name', 'callback', 'lease_seconds', 'secret');
+
+		foreach ( $expected as $k ) {
+			if ( !isset($details->$k) ) {
+				$details->$k = '';
+			}
+		}
+
+		$expiration = 0;
+		if ( !empty($details->lease_seconds) ) {
+			$expiration = time() + $details->lease_seconds;
+		}
+
 		return self::$r->_(
 			'subscriber',
 			array(
-				'name' => $name,
+				'name' => $details->name,
+				'callback' => $details->callback,
+				'secret' => $details->secret,
 				'created' => self::$r->isoDateTime(),
-				'callback' => $callback
+				'expires' => self::$r->isoDateTime($expiration)
 			),
 			true
 		);
@@ -46,6 +61,15 @@ class RedBean_Pipeline
 		$subscriber = self::$r->x->one->subscriber->name($name)->find();
 
 		return !empty($subscriber->id);
+	}
+
+	public static function removeSubscriber( $name )
+	{
+		$subscriber = self::$r->x->one->subscriber->name($name)->find();
+
+		if ( !empty($subscriber->id) ) {
+			self::$r->trash($subscriber);
+		}
 	}
 
 	public static function getUpdatesForSubscriber( $name )
@@ -87,6 +111,15 @@ class RedBean_Pipeline
 		return !empty($publisher->id);
 	}
 
+	public static function removePublisher( $name )
+	{
+		$publisher = self::$r->x->one->publisher->name($name)->find();
+
+		if ( !empty($publisher->id) ) {
+			self::$r->trash($publisher);
+		}
+	}
+
 	public static function subscribe( $listener, $resource )
 	{
 		$subscriber = self::$r->x->one->listener->name($listener)->find();
@@ -95,7 +128,22 @@ class RedBean_Pipeline
 
 		$resource = self::$r->x->one->resource->path($resource)->find(true);
 
+		if ( empty($resource->id) ) return false;
+
 		return self::$r->associate($resource, $subscriber);
+	}
+
+	public static function unsubscribe( $listener, $resource )
+	{
+		$subscriber = self::$r->x->one->listener->name($listener)->find();
+
+		if ( empty($subscriber->id) ) return false;
+
+		$resource = self::$r->x->one->resource->path($resource)->find();
+
+		if ( empty($resource->id) ) return false;
+
+		return self::$r->unassociate($resource, $subscriber);
 	}
 
 	public static function emit( $update )
