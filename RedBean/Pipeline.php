@@ -12,18 +12,7 @@ class RedBean_Pipeline
 		// Cheap trick to avoid recursive bs right now
 		if ( !empty(self::$r) ) return;
 
-		self::$r = new RedBean_Instance();
-
-		$writer = new \RedBean_QueryWriter_MySQL( $instance->toolbox->getDatabaseAdapter() );
-		$redbean = new \RedBean_OODB( $writer );
-
-		$toolbox = new \RedBean_ToolBox(
-			$redbean,
-			$instance->toolbox->getDatabaseAdapter(),
-			$writer
-		);
-
-		self::$r->configureWithToolbox($toolbox);
+		self::$r = clone $instance;
 
 		self::$r->prefix('sys_pipeline_');
 	}
@@ -146,9 +135,9 @@ class RedBean_Pipeline
 		}
 	}
 
-	public static function subscribe( $listener, $resource )
+	public static function subscribe( $subscriber, $resource )
 	{
-		$subscriber = self::$r->x->one->listener->name($listener)->find();
+		$subscriber = self::$r->x->one->subscriber->name($subscriber)->find();
 
 		if ( empty($subscriber->id) ) return false;
 
@@ -159,9 +148,9 @@ class RedBean_Pipeline
 		return self::$r->associate($resource, $subscriber);
 	}
 
-	public static function unsubscribe( $listener, $resource )
+	public static function unsubscribe( $subscriber, $resource )
 	{
-		$subscriber = self::$r->x->one->listener->name($listener)->find();
+		$subscriber = self::$r->x->one->subscriber->name($subscriber)->find();
 
 		if ( empty($subscriber->id) ) return false;
 
@@ -176,7 +165,14 @@ class RedBean_Pipeline
 	{
 		$resource_exact = self::$r->x->resource->path($update->path)->find();
 		$resource_type  = self::$r->x->resource->path($update->type)->find();
-
+		self::$r->_(
+			'log',
+			array(
+				'resource_exact' => json_encode($resource_exact),
+				'resource_type' => json_encode($resource_type)
+			),
+			true
+		);
 		if ( empty($resource_exact->id) && empty($resource_type->id) ) return;
 
 		$subscribers = array();
@@ -192,7 +188,13 @@ class RedBean_Pipeline
 				array_merge($subscribers, $resource_type->sharedSubscriber)
 			);
 		}
-
+		self::$r->_(
+			'log',
+			array(
+				'subscribers' => json_encode($subscribers)
+			),
+			true
+		);
 		if ( empty($subscribers) ) return;
 
 		foreach( $subscribers as $subscriber ) {

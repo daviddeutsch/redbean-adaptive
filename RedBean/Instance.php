@@ -1242,6 +1242,26 @@ class RedBean_Instance
 		return $oldTools;
 	}
 
+	/**
+	 * Properly untether new clone by re-configuring with a fresh toolbox
+	 *
+	 * @return void
+	 */
+	public function __clone()
+	{
+		$writer  = new RedBean_QueryWriter_MySQL( $this->toolbox->getDatabaseAdapter() );
+
+		$redbean = new RedBean_OODB( $writer );
+
+		$toolbox = new RedBean_ToolBox(
+			$redbean,
+			$this->toolbox->getDatabaseAdapter(),
+			$writer
+		);
+
+		$this->configureWithToolbox($toolbox);
+	}
+
 	public function setupPipeline()
 	{
 		RedBean_Pipeline::configureWithInstance($this);
