@@ -990,7 +990,7 @@ class RedBean_OODB extends RedBean_Observable
 		foreach ( $rows as $row ) {
 			$id                               = $row['id'];
 			$this->stash[$this->nesting][$id] = $row;
-			$collection[$id]                  = $this->load( $type, $id );
+			$collection[]                     = $this->load( $type, $id );
 		}
 		$this->stash[$this->nesting] = NULL;
 

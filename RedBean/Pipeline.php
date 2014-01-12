@@ -80,7 +80,9 @@ class RedBean_Pipeline
 		foreach ( $updates as $update ) {
 			$data = $update->export();
 
-			$data['object'] = json_decode($data['object']);
+			$data->id = (int) $data->id;
+
+			$data->object = json_decode($data->object);
 
 			$output[] = $data;
 
