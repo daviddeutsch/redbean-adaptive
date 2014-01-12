@@ -78,7 +78,11 @@ class RedBean_Pipeline
 
 		$output = array();
 		foreach ( $updates as $update ) {
-			$output[] = $update->export();
+			$data = $update->export();
+
+			$data->object = json_decode($data->object);
+
+			$output[] = $data;
 
 			self::$r->unassociate($subscriber, $update);
 		}
