@@ -1508,11 +1508,9 @@ class RedBean_Instance
 	 */
 	public function isoDate( $time = NULL )
 	{
-		if ( !$time ) {
-			$time = time();
-		}
+		if ( is_null($time) ) $time = time();
 
-		return @date( 'Y-m-d', $time );
+		return @gmdate( 'Y-m-d', $time );
 	}
 
 	/**
@@ -1526,9 +1524,9 @@ class RedBean_Instance
 	 */
 	public function isoDateTime( $time = NULL )
 	{
-		if ( !$time ) $time = time();
+		if ( is_null($time) ) $time = time();
 
-		return @date( 'Y-m-d H:i:s', $time );
+		return @gmdate( 'Y-m-d H:i:s', $time );
 	}
 
 	/**
