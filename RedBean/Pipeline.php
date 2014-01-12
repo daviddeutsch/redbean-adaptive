@@ -165,14 +165,7 @@ class RedBean_Pipeline
 	{
 		$resource_exact = self::$r->x->resource->path($update->path)->find();
 		$resource_type  = self::$r->x->resource->path($update->type)->find();
-		self::$r->_(
-			'log',
-			array(
-				'resource_exact' => json_encode($resource_exact),
-				'resource_type' => json_encode($resource_type)
-			),
-			true
-		);
+
 		if ( empty($resource_exact->id) && empty($resource_type->id) ) return;
 
 		$subscribers = array();
@@ -188,13 +181,7 @@ class RedBean_Pipeline
 				array_merge($subscribers, $resource_type->sharedSubscriber)
 			);
 		}
-		self::$r->_(
-			'log',
-			array(
-				'subscribers' => json_encode($subscribers)
-			),
-			true
-		);
+
 		if ( empty($subscribers) ) return;
 
 		foreach( $subscribers as $subscriber ) {
