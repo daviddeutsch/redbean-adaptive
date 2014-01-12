@@ -49,8 +49,8 @@ class RedBean_Pipeline
 				'name' => $details->name,
 				'callback' => $details->callback,
 				'secret' => $details->secret,
-				'created' => date( 'Y-m-d H:i:s' ),
-				'expires' => date( 'Y-m-d H:i:s', $expiration)
+				'created' => self::$r->isoDateTime(),
+				'expires' => self::$r->isoDateTime($expiration)
 			),
 			true
 		);
