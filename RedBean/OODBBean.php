@@ -367,7 +367,7 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 	 */
 	public function export( $meta = FALSE, $parents = FALSE, $onlyMe = FALSE, $filters = array() )
 	{
-		$arr = array();
+		$arr = new stdClass();
 
 		if ( $parents ) {
 			foreach ( $this as $key => $value ) {
@@ -401,11 +401,11 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 				$value = $value->export( $meta, $parents, FALSE, $filters );
 			}
 
-			$arr[$key] = $value;
+			$arr->$key = $value;
 		}
 
 		if ( $meta ) {
-			$arr['__info'] = $this->__info;
+			$arr->__info = $this->__info;
 		}
 
 		return $arr;
