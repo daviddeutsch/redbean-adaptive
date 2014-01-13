@@ -402,18 +402,18 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 
 		$path = explode( '/', $path );
 
+		if ( count( $path ) < 2 ) {
+			return $this->handleRESTPutRequest( explode('/', $path), $data );
+		}
+
 		try {
-			if ( count( $path ) < 2 ) {
-				return $this->handleRESTPutRequest( explode('/', $path), $data );
-			} else {
-				$bean = $this->instance->load( $path[0], $path[1] );
+			$bean = $this->instance->load( $path[0], $path[1] );
 
-				foreach ( (array) $data as $k => $v ) {
-					$bean->$k = $v;
-				}
-
-				return $this->instance->store( $bean );
+			foreach ( (array) $data as $k => $v ) {
+				$bean->$k = $v;
 			}
+
+			return $this->instance->store( $bean );
 		} catch ( Exception $exception ) {
 			return null;
 		}
@@ -434,6 +434,10 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 		}
 
 		$path = explode( '/', $path );
+
+		if ( count( $path ) > 1 ) {
+			return $this->handleRESTPostRequest( explode('/', $path), $data );
+		}
 
 		try {
 			$bean = $this->instance->dispense( $path[0] );
