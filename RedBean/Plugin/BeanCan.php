@@ -403,7 +403,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 		$path = explode( '/', $path );
 
 		if ( count( $path ) < 2 ) {
-			return $this->handleRESTPutRequest( explode('/', $path), $data );
+			return $this->handleRESTPutRequest( implode('/', $path), $data );
 		}
 
 		try {
@@ -436,7 +436,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 		$path = explode( '/', $path );
 
 		if ( count( $path ) > 1 ) {
-			return $this->handleRESTPostRequest( explode('/', $path), $data );
+			return $this->handleRESTPostRequest( implode('/', $path), $data );
 		}
 
 		try {
