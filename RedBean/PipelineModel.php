@@ -18,7 +18,7 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 		}
 	}
 
-	public function after_delete()
+	public function before_delete()
 	{
 		RedBean_Pipeline::delete($this->bean);
 	}
