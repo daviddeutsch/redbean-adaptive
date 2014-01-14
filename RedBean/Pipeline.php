@@ -88,6 +88,8 @@ class RedBean_Pipeline
 
 			$data->object = json_decode($data->object);
 
+			$data->object->id = (int) $data->object->id;
+
 			$output[] = $data;
 
 			self::$r->unassociate($subscriber, $update);
