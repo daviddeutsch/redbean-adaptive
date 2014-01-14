@@ -76,6 +76,10 @@ class RedBean_Pipeline
 
 		if ( empty($updates) ) return null;
 
+		if ( !is_array($updates) ) {
+			$updates = array($updates);
+		}
+
 		$output = array();
 		foreach ( $updates as $update ) {
 			$data = $update->export();
