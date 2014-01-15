@@ -180,7 +180,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	{
 		$consSQL = ( $constraint ? 'CASCADE' : 'SET NULL' );
 
-		$t       = $this->getTable( $type );
+		$t       = $this->getTableName( $type );
 
 		$label   = 'from_' . $field . '_to_table_' . $targetType . '_col_' . $targetField;
 
@@ -308,7 +308,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function widenColumn( $type, $column, $datatype )
 	{
-		$t = $this->getTable( $type );
+		$t = $this->getTableName( $type );
 
 		$t['columns'][$column] = $this->typeno_sqltype[$datatype];
 
@@ -334,7 +334,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function createTable( $table )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		$sql   = "CREATE TABLE $table ( id INTEGER PRIMARY KEY AUTOINCREMENT ) ";
 
@@ -346,7 +346,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function getColumns( $table )
 	{
-		$table      = $this->getTable( $table, TRUE );
+		$table      = $this->getTableName( $table, TRUE );
 
 		$columnsRaw = $this->adapter->get( "PRAGMA table_info('$table')" );
 
@@ -361,9 +361,9 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	 */
 	public function addUniqueIndex( $type, $columns )
 	{
-		$name  = 'UQ_' . $this->getTable( $type, TRUE ) . implode( '__', $columns );
+		$name  = 'UQ_' . $this->getTableName( $type, TRUE ) . implode( '__', $columns );
 
-		$t     = $this->getTable( $type );
+		$t     = $this->getTableName( $type );
 
 		if ( isset( $t['indexes'][$name] ) ) return;
 
@@ -391,7 +391,7 @@ class RedBean_QueryWriter_SQLiteT extends RedBean_QueryWriter_AQueryWriter imple
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 
 		$name   = preg_replace( '/\W/', '', $name );
 		$column = $this->esc( $column, TRUE );

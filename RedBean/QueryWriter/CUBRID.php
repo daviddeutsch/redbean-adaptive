@@ -189,9 +189,9 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 	public function createTable( $table )
 	{
 		$sql  = 'CREATE TABLE '
-			. $this->getTable( $table )
+			. $this->getTableName( $table )
 			. ' ("id" integer AUTO_INCREMENT, CONSTRAINT "pk_'
-			. $this->getTable( $table, TRUE )
+			. $this->getTableName( $table, TRUE )
 			. '_id" PRIMARY KEY("id"))';
 
 		$this->adapter->exec( $sql );
@@ -202,7 +202,7 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function getColumns( $table )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		$columnsRaw = $this->adapter->get( "SHOW COLUMNS FROM $table" );
 
@@ -274,7 +274,7 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 		$table  = $type;
 		$type   = $field;
 
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 		$column = $this->esc( $column );
 
 		$type   = array_key_exists( $type, $this->typeno_sqltype ) ? $this->typeno_sqltype[$type] : '';
@@ -287,7 +287,7 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 	 */
 	public function addUniqueIndex( $table, $columns )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		sort( $columns ); // else we get multiple indexes due to order-effects
 
@@ -330,7 +330,7 @@ class RedBean_QueryWriter_CUBRID extends RedBean_QueryWriter_AQueryWriter implem
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 
 		$name   = preg_replace( '/\W/', '', $name );
 

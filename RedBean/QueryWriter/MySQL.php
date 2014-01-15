@@ -159,7 +159,7 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 	 */
 	public function createTable( $table )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		$encoding = $this->adapter->getDatabase()->getMysqlEncoding();
 		$sql   = "CREATE TABLE $table (id INT( 11 ) UNSIGNED NOT NULL AUTO_INCREMENT, PRIMARY KEY ( id )) ENGINE = InnoDB DEFAULT CHARSET={$encoding} COLLATE={$encoding}_unicode_ci ";
@@ -172,7 +172,7 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 	 */
 	public function getColumns( $table )
 	{
-		$columnsRaw = $this->adapter->get( "DESCRIBE " . $this->getTable( $table ) );
+		$columnsRaw = $this->adapter->get( "DESCRIBE " . $this->getTableName( $table ) );
 
 		$columns = array();
 		foreach ( $columnsRaw as $r ) {
@@ -258,7 +258,7 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 	 */
 	public function addUniqueIndex( $table, $columns )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		sort( $columns ); // Else we get multiple indexes due to order-effects
 
@@ -290,7 +290,7 @@ class RedBean_QueryWriter_MySQL extends RedBean_QueryWriter_AQueryWriter impleme
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 
 		$name   = preg_replace( '/\W/', '', $name );
 

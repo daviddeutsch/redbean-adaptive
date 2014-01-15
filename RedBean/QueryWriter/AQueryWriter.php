@@ -251,7 +251,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	private function getRelationalTablesAndColumns( $sourceType, $destType, $noQuote = FALSE )
 	{
-		$linkTable   = $this->getTable( $this->getAssocTable( array( $sourceType, $destType ) ), $noQuote );
+		$linkTable   = $this->getTableName( $this->getAssocTable( array( $sourceType, $destType ) ), $noQuote );
 		$sourceCol   = $this->esc( $sourceType . '_id', $noQuote );
 
 		if ( $sourceType === $destType ) {
@@ -260,8 +260,8 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			$destCol = $this->esc( $destType . '_id', $noQuote );
 		}
 
-		$sourceTable = $this->getTable( $sourceType, $noQuote );
-		$destTable   = $this->getTable( $destType, $noQuote );
+		$sourceTable = $this->getTableName( $sourceType, $noQuote );
+		$destTable   = $this->getTableName( $destType, $noQuote );
 
 		return array( $sourceTable, $destTable, $linkTable, $sourceCol, $destCol );
 	}
@@ -312,7 +312,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$default = $this->defaultValue;
 		$suffix  = $this->getInsertSuffix( $type );
-		$table   = $this->getTable( $type );
+		$table   = $this->getTableName( $type );
 
 		if ( count( $insertvalues ) > 0 && is_array( $insertvalues[0] ) && count( $insertvalues[0] ) > 0 ) {
 			foreach ( $insertcolumns as $k => $v ) {
@@ -407,7 +407,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$tables = $this->getTables();
 
-		return in_array( $this->getTable($table, true), $tables );
+		return in_array( $this->getTableName($table, true), $tables );
 	}
 
 	/**
@@ -459,7 +459,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$table  = $type;
 		$type   = $field;
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 		$column = $this->esc( $column );
 
 		$type = ( isset( $this->typeno_sqltype[$type] ) ) ? $this->typeno_sqltype[$type] : '';
@@ -489,7 +489,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			return $id;
 		}
 
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 		$sql   = "UPDATE $table SET ";
 
 		$p = $v = array();
@@ -524,7 +524,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 			}
 		}
 
-		$table = $this->getTable( $type );
+		$table = $this->getTableName( $type );
 
 		$sql   = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql   = "SELECT * FROM {$table} {$sql} -- keep-cache";
@@ -676,7 +676,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$addSql = $this->glueSQLCondition( $addSql );
 
-		$table  = $this->getTable( $type );
+		$table  = $this->getTableName( $type );
 
 		$sql    = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql    = "SELECT COUNT(*) FROM {$table} {$sql} -- keep-cache";
@@ -722,7 +722,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	{
 		$addSql = $this->glueSQLCondition( $addSql );
 
-		$table  = $this->getTable( $type );
+		$table  = $this->getTableName( $type );
 
 		$sql    = $this->makeSQLFromConditions( $conditions, $bindings, $addSql );
 		$sql    = "DELETE FROM {$table} {$sql}";
@@ -762,7 +762,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 		$table   = $type;
 		$type    = $datatype;
 
-		$table   = $this->getTable( $table );
+		$table   = $this->getTableName( $table );
 		$column  = $this->esc( $column );
 
 		$newtype = $this->typeno_sqltype[$type];
@@ -775,7 +775,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function wipe( $type )
 	{
-		$table = $this->getTable( $type );
+		$table = $this->getTableName( $type );
 
 		$this->adapter->exec( "TRUNCATE $table " );
 	}
@@ -785,8 +785,8 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 */
 	public function addFK( $type, $targetType, $field, $targetField, $isDependent = FALSE )
 	{
-		$table           = $this->getTable( $type );
-		$tableNoQ        = $this->getTable( $type, TRUE );
+		$table           = $this->getTableName( $type );
+		$tableNoQ        = $this->getTableName( $type, TRUE );
 
 		$targetTable     = $this->esc( $targetType );
 
@@ -901,7 +901,7 @@ abstract class RedBean_QueryWriter_AQueryWriter { //bracket must be here - other
 	 *
 	 * @return string
 	 */
-	public function getTable( $table, $noQuotes = FALSE )
+	public function getTableName( $table, $noQuotes = FALSE )
 	{
 		if ( !empty( $this->prefix ) ) {
 			if ( strpos($table, $this->prefix) !== 0 ) {

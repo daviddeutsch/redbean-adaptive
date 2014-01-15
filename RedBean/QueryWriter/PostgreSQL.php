@@ -162,7 +162,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	 */
 	public function createTable( $table )
 	{
-		$table = $this->getTable( $table );
+		$table = $this->getTableName( $table );
 
 		$this->adapter->exec( " CREATE TABLE $table (id SERIAL PRIMARY KEY); " );
 	}
@@ -172,7 +172,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	 */
 	public function getColumns( $table )
 	{
-		$table      = $this->getTable( $table, TRUE );
+		$table      = $this->getTableName( $table, TRUE );
 
 		$columnsRaw = $this->adapter->get( "SELECT column_name, data_type FROM information_schema.columns WHERE table_name='$table'" );
 
@@ -260,7 +260,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 		$table   = $type;
 		$type    = $datatype;
 
-		$table   = $this->getTable( $table );
+		$table   = $this->getTableName( $table );
 		$column  = $this->esc( $column );
 
 		$newtype = $this->typeno_sqltype[$type];
@@ -273,7 +273,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	 */
 	public function addUniqueIndex( $table, $columns )
 	{
-		$table = $this->getTable( $table, TRUE );
+		$table = $this->getTableName( $table, TRUE );
 
 		sort( $columns ); //else we get multiple indexes due to order-effects
 
@@ -327,7 +327,7 @@ class RedBean_QueryWriter_PostgreSQL extends RedBean_QueryWriter_AQueryWriter im
 	public function addIndex( $type, $name, $column )
 	{
 		$table  = $type;
-		$table  = $this->getTable( $table );
+		$table  = $this->getTableName( $table );
 
 		$name   = preg_replace( '/\W/', '', $name );
 		$column = $this->esc( $column );
