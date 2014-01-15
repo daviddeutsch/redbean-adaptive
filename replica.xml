@@ -5,7 +5,7 @@
     Created on : 7 augustus 2010, 11:41
     Author     : Gabor de Mooij
     Description:
-    
+
 -->
 
 <root>
@@ -13,7 +13,6 @@
 		<item type="txt">RedBean/header.txt</item>
 		<item type="php">RedBean/Driver.php</item>
 		<item type="php">RedBean/Driver/PDO.php</item>
-		<item type="php" flavour="oci">RedBean/Driver/OCI.php</item>
 		<item type="php">RedBean/OODBBean.php</item>
 		<item type="php">RedBean/Observable.php</item>
 		<item type="php">RedBean/Observer.php</item>
@@ -24,8 +23,6 @@
 		<item type="php">RedBean/QueryWriter/MySQL.php</item>
 		<item type="php">RedBean/QueryWriter/SQLiteT.php</item>
 		<item type="php">RedBean/QueryWriter/PostgreSQL.php</item>
-		<item type="php">RedBean/QueryWriter/CUBRID.php</item>
-		<item type="php" flavour="oci">RedBean/QueryWriter/Oracle.php</item>
 		<item type="php">RedBean/Exception.php</item>
 		<item type="php">RedBean/Exception/SQL.php</item>
 		<item type="php">RedBean/Exception/Security.php</item>
@@ -36,6 +33,7 @@
 		<item type="php">RedBean/AssociationManager/ExtAssociationManager.php</item>
 		<item type="php">RedBean/Setup.php</item>
 		<item type="php">RedBean/IModelFormatter.php</item>
+		<item type="php">RedBean/Instance.php</item>
 		<item type="php">RedBean/Logger.php</item>
 		<item type="php">RedBean/Logger/Default.php</item>
 		<item type="php">RedBean/BeanHelper.php</item>
@@ -47,6 +45,8 @@
 		<item type="php">RedBean/LabelMaker.php</item>
 		<item type="php">RedBean/Finder.php</item>
 		<item type="php">RedBean/Facade.php</item>
+		<item type="php">RedBean/Pipeline.php</item>
+		<item type="php">RedBean/PipelineModel.php</item>
 		<item type="php">RedBean/Plugin.php</item>
 		<item type="php">RedBean/Plugin/BeanCan.php</item>
 		<item type="php">RedBean/Plugin/BeanCanResty.php</item>

@@ -1,5 +1,16 @@
 <?php
-
+/**
+ * RedBean Pipeline
+ *
+ * @file    RedBean/Pipeline.php
+ * @desc    Pipeline for Pub/Sub applications.
+ * @author  David Deutsch
+ * @license BSD/GPLv2
+ *
+ * copyright (c) David Deutsch
+ * This source file is subject to the BSD/GPLv2 License that is bundled
+ * with this source code in the file license.txt.
+ */
 class RedBean_Pipeline
 {
 	/**
