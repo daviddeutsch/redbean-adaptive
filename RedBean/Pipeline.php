@@ -236,15 +236,15 @@ class RedBean_Pipeline
 	/**
 	 * @param $bean \RedBean_OODBBean
 	 */
-	public static function add( $bean )
+	public static function add( $bean, $path, $type )
 	{
 		self::emit(
 			self::$r->_(
 				'update',
 				array(
 					'operation' => 'add',
-					'path' => $bean->getMeta('type') . '/' . $bean->id,
-					'type' => $bean->getMeta('type'),
+					'path' => self::makeType($bean),
+					'type' => self::makePath($bean),
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
@@ -257,7 +257,7 @@ class RedBean_Pipeline
 	/**
 	 * @param $bean \RedBean_OODBBean
 	 */
-	public static function update( $bean )
+	public static function update( $bean, $path, $type )
 	{
 		$changes = $bean->getMeta('sys.changes');
 
@@ -268,8 +268,8 @@ class RedBean_Pipeline
 				'update',
 				array(
 					'operation' => 'update',
-					'path' => $bean->getMeta('type') . '/' . $bean->id,
-					'type' => $bean->getMeta('type'),
+					'path' => self::makeType($bean),
+					'type' => self::makePath($bean),
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
@@ -282,15 +282,15 @@ class RedBean_Pipeline
 	/**
 	 * @param $bean \RedBean_OODBBean
 	 */
-	public static function delete( $bean )
+	public static function delete( $bean, $path, $type )
 	{
 		self::emit(
 			self::$r->_(
 				'update',
 				array(
 					'operation' => 'remove',
-					'path' => $bean->getMeta('type') . '/' . $bean->id,
-					'type' => $bean->getMeta('type'),
+					'path' => self::makeType($bean),
+					'type' => self::makePath($bean),
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
@@ -299,4 +299,5 @@ class RedBean_Pipeline
 			)
 		);
 	}
+
 }

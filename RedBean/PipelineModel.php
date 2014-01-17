@@ -23,14 +23,36 @@ class RedBean_PipelineModel extends RedBean_SimpleModel
 	public function after_update()
 	{
 		if ( $this->existing ) {
-			RedBean_Pipeline::update($this->bean);
+			RedBean_Pipeline::update(
+				$this->bean,
+				$this->makePath($this->bean),
+				$this->makeType($this->bean)
+			);
 		} else {
-			RedBean_Pipeline::add($this->bean);
+			RedBean_Pipeline::add(
+				$this->bean,
+				$this->makePath($this->bean),
+				$this->makeType($this->bean)
+			);
 		}
 	}
 
 	public function delete()
 	{
-		RedBean_Pipeline::delete($this->bean);
+		RedBean_Pipeline::delete(
+			$this->bean,
+			$this->makePath($this->bean),
+			$this->makeType($this->bean)
+		);
+	}
+
+	protected function makePath( $bean )
+	{
+		return $bean->getMeta('type') . '/' . $bean->id;
+	}
+
+	protected function makeType( $bean )
+	{
+		return $bean->getMeta('type');
 	}
 }
