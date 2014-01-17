@@ -243,8 +243,8 @@ class RedBean_Pipeline
 				'update',
 				array(
 					'operation' => 'add',
-					'path' => self::makeType($bean),
-					'type' => self::makePath($bean),
+					'path' => $path,
+					'type' => $type,
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
@@ -268,8 +268,8 @@ class RedBean_Pipeline
 				'update',
 				array(
 					'operation' => 'update',
-					'path' => self::makeType($bean),
-					'type' => self::makePath($bean),
+					'path' => $path,
+					'type' => $type,
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
@@ -289,8 +289,8 @@ class RedBean_Pipeline
 				'update',
 				array(
 					'operation' => 'remove',
-					'path' => self::makeType($bean),
-					'type' => self::makePath($bean),
+					'path' => $path,
+					'type' => $type,
 					'objectid' => $bean->id,
 					'object' => json_encode( $bean->export() ),
 					'created' => self::$r->isoDateTime()
