@@ -15,29 +15,60 @@ class RedBean_PipelineAssociationModel extends RedBean_SimpleModel
 {
 	public function after_update()
 	{
+		$paths = $this->makePath($this->bean);
+		$types = $this->makeType($this->bean);
+
 		RedBean_Pipeline::add(
 			$this->bean,
-			$this->makePath($this->bean),
-			$this->makeType($this->bean)
+			$paths[0],
+			$types[0]
+		);
+
+		RedBean_Pipeline::add(
+			$this->bean,
+			$paths[1],
+			$types[1]
 		);
 	}
 
 	public function delete()
 	{
+		$paths = $this->makePath($this->bean);
+		$types = $this->makeType($this->bean);
+
 		RedBean_Pipeline::delete(
 			$this->bean,
-			$this->makePath($this->bean),
-			$this->makeType($this->bean)
+			$paths[0],
+			$types[0]
+		);
+
+		RedBean_Pipeline::delete(
+			$this->bean,
+			$paths[1],
+			$types[1]
 		);
 	}
 
 	protected function makePath( $bean )
 	{
-		return $bean->getMeta('type') . '/' . $bean->id;
+		$objects = explode('_', $bean->getMeta('type'));
+
+		$oneid = $objects[0].'_id';
+		$twoid = $objects[1].'_id';
+
+		return array(
+			$objects[0] . '/' . $bean->$oneid . '/' . $objects[1] . '/' . $bean->$twoid,
+			$objects[1] . '/' . $bean->$twoid . '/' . $objects[0] . '/' . $bean->$oneid
+		);
 	}
 
 	protected function makeType( $bean )
 	{
-		return $bean->getMeta('type');
+		$objects = explode('_', $bean->getMeta('type'));
+
+		return array(
+			$objects[0] . '/' . $objects[1],
+			$objects[1] . '/' . $objects[0]
+		);
 	}
 }
