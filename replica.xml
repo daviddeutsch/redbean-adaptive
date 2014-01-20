@@ -44,7 +44,9 @@
 		<item type="php">RedBean/TagManager.php</item>
 		<item type="php">RedBean/LabelMaker.php</item>
 		<item type="php">RedBean/Finder.php</item>
+		<item type="php">RedBean/FindHelper.php</item>
 		<item type="php">RedBean/Pipeline.php</item>
+		<item type="php">RedBean/PipelineAssociationModel.php</item>
 		<item type="php">RedBean/PipelineModel.php</item>
 		<item type="php">RedBean/Plugin.php</item>
 		<item type="php">RedBean/Plugin/BeanCan.php</item>
