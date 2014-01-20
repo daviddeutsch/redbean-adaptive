@@ -797,7 +797,12 @@ class RedBean_OODBBean implements IteratorAggregate, ArrayAccess, Countable
 			$value = $value->format( 'Y-m-d H:i:s' );
 		}
 
-		$this->addChange($property, $this->properties[$property], $value);
+		if ( isset($this->properties[$property]) ) {
+			$this->addChange($property, $this->properties[$property], $value);
+		} else {
+			$this->addChange($property, '', $value);
+		}
+
 
 		$this->properties[$property] = $value;
 	}
