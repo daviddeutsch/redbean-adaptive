@@ -34,12 +34,6 @@ foreach ( $code as $f => $codeFlav ) {
 
 	preg_match_all( '/@plugin\s+.*/', $codeFlav, $m );
 
-	$code[$f] .= "
-class R extends RedBean_Facade{
-  " . str_replace( '@plugin', '', trim( implode( "\n", $m[0] ) ) ) . "
-}
-";
-
 	// Remove headers
 	$x     = explode( '===BOUNDARY===', $code[$f] );
 	$clean = '';
