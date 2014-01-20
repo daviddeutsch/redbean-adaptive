@@ -1262,9 +1262,9 @@ class RedBean_Instance
 		$this->configureWithToolbox($toolbox);
 	}
 
-	public function setupPipeline()
+	public function setupPipeline( $prefix=null )
 	{
-		RedBean_Pipeline::configureWithInstance($this);
+		RedBean_Pipeline::configureWithInstance($this, $prefix);
 	}
 
 	/**
