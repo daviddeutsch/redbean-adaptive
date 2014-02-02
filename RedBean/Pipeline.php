@@ -25,7 +25,7 @@ class RedBean_Pipeline
 
 		self::$r = clone $instance;
 
-		self::$r->prefix($prefix . 'sys_pipeline_');
+		self::$r->prefix($prefix . 'rsys_');
 	}
 
 	public static function addSubscriber( $details )
