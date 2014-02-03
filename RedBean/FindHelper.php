@@ -267,9 +267,11 @@ class RedBean_FindHelper
 	/**
 	 * Args for constructing a find:
 	 *
-	 * [0] Data to search for
-	 * [1]
-	 * [2] Override the comparator, default being '='
+	 * · Data to search for
+	 * · Override the comparator, default being '='
+	 *
+	 * If we have only one argument, the first is the search data. If we have
+	 * two, the second is the search data, the first the comparator
 	 *
 	 * @param $name
 	 * @param $args
@@ -298,17 +300,21 @@ class RedBean_FindHelper
 
 			$this->params_plain[$name] = $args[0];
 		} else {
-			if ( isset( $args[2] ) ) {
-				$c = $args[2];
+			if ( isset( $args[1] ) ) {
+				$c = $args[0];
+
+				$value = $args[1];
 			} else {
 				$c = '=';
+
+				$value = $args[0];
 			}
 
 			$this->search[] = $name . ' ' . $c . ' :' . $name;
 
-			$this->params[':' . $name] = $args[0];
+			$this->params[':' . $name] = $value;
 
-			$this->params_plain[$name] = $args[0];
+			$this->params_plain[$name] = $value;
 		}
 
 		return $this;
