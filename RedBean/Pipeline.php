@@ -238,20 +238,7 @@ class RedBean_Pipeline
 	 */
 	public static function add( $bean, $path, $type )
 	{
-		self::emit(
-			self::$r->_(
-				'update',
-				array(
-					'operation' => 'add',
-					'path' => $path,
-					'type' => $type,
-					'objectid' => $bean->id,
-					'object' => json_encode( $bean->export() ),
-					'created' => self::$r->isoDateTime()
-				),
-				true
-			)
-		);
+		self::emit( self::makeUpdate($bean, $path, $type, 'add') );
 	}
 
 	/**
@@ -263,20 +250,7 @@ class RedBean_Pipeline
 
 		if ( empty($changes) ) return;
 
-		self::emit(
-			self::$r->_(
-				'update',
-				array(
-					'operation' => 'update',
-					'path' => $path,
-					'type' => $type,
-					'objectid' => $bean->id,
-					'object' => json_encode( $bean->export() ),
-					'created' => self::$r->isoDateTime()
-				),
-				true
-			)
-		);
+		self::emit( self::makeUpdate($bean, $path, $type, 'update') );
 	}
 
 	/**
@@ -284,19 +258,22 @@ class RedBean_Pipeline
 	 */
 	public static function delete( $bean, $path, $type )
 	{
-		self::emit(
-			self::$r->_(
-				'update',
-				array(
-					'operation' => 'remove',
-					'path' => $path,
-					'type' => $type,
-					'objectid' => $bean->id,
-					'object' => json_encode( $bean->export() ),
-					'created' => self::$r->isoDateTime()
-				),
-				true
-			)
+		self::emit( self::makeUpdate($bean, $path, $type, 'remove') );
+	}
+
+	private static function makeUpdate( $bean, $path, $type, $operation )
+	{
+		return self::$r->_(
+			'update',
+			array(
+				'operation' => $operation,
+				'path' => $path,
+				'type' => $type,
+				'objectid' => $bean->id,
+				'object' => json_encode( $bean->export() ),
+				'created' => self::$r->isoDateTime()
+			),
+			true
 		);
 	}
 
