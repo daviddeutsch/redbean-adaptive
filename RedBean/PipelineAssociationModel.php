@@ -66,9 +66,12 @@ class RedBean_PipelineAssociationModel extends RedBean_SimpleModel
 	{
 		$objects = explode('_', $bean->getMeta('type'));
 
+		$oneid = $objects[0].'_id';
+		$twoid = $objects[1].'_id';
+
 		return array(
-			$objects[0] . '/' . $objects[1],
-			$objects[1] . '/' . $objects[0]
+			$objects[0] . '/' . $bean->$oneid . '/' . $objects[1],
+			$objects[1] . '/' . $bean->$twoid . '/' . $objects[0]
 		);
 	}
 }
