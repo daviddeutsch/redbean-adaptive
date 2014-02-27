@@ -18,17 +18,9 @@ class RedBean_PipelineAssociationModel extends RedBean_SimpleModel
 		$paths = $this->makePath($this->bean);
 		$types = $this->makeType($this->bean);
 
-		RedBean_Pipeline::add(
-			$this->bean,
-			$paths[0],
-			$types[0]
-		);
-
-		RedBean_Pipeline::add(
-			$this->bean,
-			$paths[1],
-			$types[1]
-		);
+		foreach ( $paths as $i => $path ) {
+			RedBean_Pipeline::add($this->bean, $path, $types[$i]);
+		}
 	}
 
 	public function delete()
@@ -36,17 +28,9 @@ class RedBean_PipelineAssociationModel extends RedBean_SimpleModel
 		$paths = $this->makePath($this->bean);
 		$types = $this->makeType($this->bean);
 
-		RedBean_Pipeline::delete(
-			$this->bean,
-			$paths[0],
-			$types[0]
-		);
-
-		RedBean_Pipeline::delete(
-			$this->bean,
-			$paths[1],
-			$types[1]
-		);
+		foreach ( $paths as $i => $path ) {
+			RedBean_Pipeline::delete($this->bean, $path, $types[$i]);
+		}
 	}
 
 	protected function makePath( $bean )
