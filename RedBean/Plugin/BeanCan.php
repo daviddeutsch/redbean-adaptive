@@ -402,6 +402,12 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 
 		$path = explode( '/', $path );
 
+		if ( (count( $path ) < 2) && isset($data->id) ) {
+			$path[] = $data->id;
+
+			unset($data->id);
+		}
+
 		if ( count( $path ) < 2 ) {
 			return $this->handleRESTPutRequest( implode('/', $path), $data );
 		}
