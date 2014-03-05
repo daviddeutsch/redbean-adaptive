@@ -263,6 +263,8 @@ class RedBean_Pipeline
 
 	private static function makeUpdate( $bean, $path, $type, $operation )
 	{
+		$json = json_encode( $bean->export() );
+
 		return self::$r->_(
 			'update',
 			array(
@@ -270,8 +272,9 @@ class RedBean_Pipeline
 				'path' => $path,
 				'type' => $type,
 				'objectid' => $bean->id,
-				'object' => json_encode( $bean->export() ),
-				'created' => self::$r->isoDateTime()
+				'object' => $json,
+				'created' => self::$r->isoDateTime(),
+				'hash'  => sha1($json)
 			),
 			true
 		);
