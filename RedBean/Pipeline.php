@@ -18,6 +18,8 @@ class RedBean_Pipeline
 	 */
 	private static $r;
 
+	private static $subscriber;
+
 	public static function configureWithInstance( $instance, $prefix=null )
 	{
 		// Cheap trick to avoid recursive bs right now
@@ -26,6 +28,11 @@ class RedBean_Pipeline
 		self::$r = clone $instance;
 
 		self::$r->prefix($prefix . 'rsys_');
+	}
+
+	public static function setSubscriber( $subscriber )
+	{
+		self::$subscriber = $subscriber;
 	}
 
 	public static function addSubscriber( $details )
@@ -38,9 +45,10 @@ class RedBean_Pipeline
 			}
 		}
 
-		$expiration = 0;
 		if ( !empty($details->lease_seconds) ) {
 			$expiration = time() + $details->lease_seconds;
+		} else {
+			$expiration = time() + 86400;
 		}
 
 		return self::$r->_(
@@ -91,6 +99,8 @@ class RedBean_Pipeline
 			$updates = array($updates);
 		}
 
+		self::$r->unassociate($subscriber, $updates);
+
 		$output = array();
 		foreach ( $updates as $update ) {
 			$data = $update->export();
@@ -103,7 +113,7 @@ class RedBean_Pipeline
 
 			$output[] = $data;
 
-			self::$r->unassociate($subscriber, $update);
+
 		}
 
 		return $output;
@@ -208,6 +218,11 @@ class RedBean_Pipeline
 		if ( empty($subscribers) ) return;
 
 		foreach( $subscribers as $subscriber ) {
+			// Don't update the subscriber making the call
+			if ( !empty(self::$subscriber) ) {
+				if ( $subscriber->name == self::$subscriber->name ) continue;
+			}
+
 			if ( empty($subscriber->callback) ) {
 				// No callback, so this will be stashed for retrieval by the subscriber
 				self::$r->associate($subscriber, $update);
