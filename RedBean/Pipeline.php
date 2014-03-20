@@ -220,7 +220,7 @@ class RedBean_Pipeline
 		foreach( $subscribers as $subscriber ) {
 			// Don't update the subscriber making the call
 			if ( !empty(self::$subscriber) ) {
-				if ( $subscriber->name == self::$subscriber->name ) continue;
+				if ( $subscriber->name == self::$subscriber ) continue;
 			}
 
 			if ( empty($subscriber->callback) ) {
