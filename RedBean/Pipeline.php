@@ -292,5 +292,4 @@ class RedBean_Pipeline
 			true
 		);
 	}
-
 }
