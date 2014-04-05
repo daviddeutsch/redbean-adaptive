@@ -112,8 +112,6 @@ class RedBean_Pipeline
 			$data->object->id = (int) $data->object->id;
 
 			$output[] = $data;
-
-
 		}
 
 		return $output;

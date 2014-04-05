@@ -340,7 +340,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 * @param string $path   RESTFul path to resource (or resource type)
 	 * @param object $path   Data to write to resource (or to create as new resource)
 	 *
-	 * @return string $json a JSON encoded response ready for sending to client
+	 * @return int|array|RedBean_OODBBean
 	 */
 	public function handleRESTRequest( $method, $path, $data=array() )
 	{
@@ -359,7 +359,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 *
 	 * @param string $path RESTFul path to resource
 	 *
-	 * @return string $json a JSON encoded response ready for sending to client
+	 * @return array|RedBean_OODBBean one or an array of beans
 	 */
 	public function handleRESTGetRequest( $path )
 	{
@@ -373,11 +373,11 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 
 		try {
 			if ( count( $resourceInfo ) < 2 ) {
-				return $this->instance->findAndExport( $type );
+				return $this->instance->findAll( $type );
 			} else {
 				$id = (int) $resourceInfo[1];
 
-				return $this->instance->load( $type, $id )->export();
+				return $this->instance->load( $type, $id );
 			}
 		} catch ( Exception $exception ) {
 			return null;
@@ -392,7 +392,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 * @param string $path RESTFul path to resource
 	 * @param object $data Data to write to the object
 	 *
-	 * @return string $json a JSON encoded response ready for sending to client
+	 * @return int ID of the stored object
 	 */
 	public function handleRESTPostRequest( $path, $data )
 	{
@@ -431,7 +431,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 * @param string $path RESTFul path to resource
 	 * @param object $data Data to write to the object
 	 *
-	 * @return string $json a JSON encoded response ready for sending to client
+	 * @return int ID of the stored object
 	 */
 	public function handleRESTPutRequest( $path, $data )
 	{
@@ -463,7 +463,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 	 *
 	 * @param string $path RESTFul path to resource
 	 *
-	 * @return string $json a JSON encoded response ready for sending to client
+	 * @return int ID of the stored object
 	 */
 	public function handleRESTDeleteRequest( $path )
 	{
@@ -480,7 +480,7 @@ class RedBean_Plugin_BeanCan implements RedBean_Plugin
 
 			$this->instance->trash( $bean );
 
-			return null;
+			return $path[1];
 		} catch ( Exception $exception ) {
 			return null;
 		}
