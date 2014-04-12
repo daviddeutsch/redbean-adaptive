@@ -17,7 +17,7 @@ class RedBean_ModelHelper implements RedBean_Observer
 {
 
 	/**
-	 * @var RedBean_IModelFormatter
+	 * @var RedBean_IModelFormatter|callable
 	 */
 	private $modelFormatter;
 
@@ -45,8 +45,10 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 */
 	public function getModelName( $model, $bean = NULL )
 	{
-		if ( $this->modelFormatter ) {
+		if ( is_object($this->modelFormatter) ) {
 			return $this->modelFormatter->formatModel( $model, $bean );
+		} elseif ( is_callable($this->modelFormatter) ) {
+			return call_user_func( $this->modelFormatter, $model, $bean );
 		} else {
 			$prefix = defined('REDBEAN_MODEL_PREFIX') ? REDBEAN_MODEL_PREFIX : 'Model_';
 
