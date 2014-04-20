@@ -26,6 +26,8 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 */
 	private $dependencyInjector;
 
+	private $modelCache;
+
 	/**
 	 * @see RedBean_Observer::onEvent
 	 */
@@ -45,15 +47,23 @@ class RedBean_ModelHelper implements RedBean_Observer
 	 */
 	public function getModelName( $model, $bean = NULL )
 	{
+		if ( isset($this->modelCache[$model]) ) {
+			return $this->modelCache[$model];
+		}
+
 		if ( is_object($this->modelFormatter) ) {
-			return $this->modelFormatter->formatModel( $model, $bean );
+			$name = $this->modelFormatter->formatModel( $model, $bean );
 		} elseif ( is_callable($this->modelFormatter) ) {
-			return call_user_func( $this->modelFormatter, $model, $bean );
+			$name = call_user_func( $this->modelFormatter, $model, $bean );
 		} else {
 			$prefix = defined('REDBEAN_MODEL_PREFIX') ? REDBEAN_MODEL_PREFIX : 'Model_';
 
-			return $prefix . ucfirst( $model );
+			$name = $prefix . ucfirst( $model );
 		}
+
+		$this->modelCache[$model] = $name;
+
+		return $name;
 	}
 
 	/**
