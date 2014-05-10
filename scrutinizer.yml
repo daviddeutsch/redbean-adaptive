@@ -18,6 +18,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
+                - 'testing/*'
             paths: {  }
     php_pdepend:
         enabled: true
@@ -32,6 +33,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
+                - 'testing/*'
             paths: {  }
     php_analyzer:
         enabled: true
@@ -45,6 +47,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
+                - 'testing/*'
             paths: {  }
         path_configs: {  }
     php_changetracking:
@@ -61,6 +64,7 @@ tools:
                 - 'app/*'
                 - 'bin/*'
                 - 'library/*'
+                - 'testing/*'
             paths: {  }
 before_commands: {  }
 after_commands: {  }
