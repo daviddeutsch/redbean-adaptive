@@ -1249,7 +1249,9 @@ class RedBean_Instance
 	 */
 	public function __clone()
 	{
-		$writer  = new RedBean_QueryWriter_MySQL( $this->toolbox->getDatabaseAdapter() );
+		$class = get_class($this->toolbox->getWriter());
+
+		$writer  = new $class( $this->toolbox->getDatabaseAdapter() );
 
 		$redbean = new RedBean_OODB( $writer );
 
